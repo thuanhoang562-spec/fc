@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b16">
+<title>Quản Lý Bóng Đá</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&amp;family=Oswald:wght@500;700&amp;display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#070b16;--panel:#0e1526;--panel2:#141d36;--line:#22305a;--gold:#e6c25a;--ink:#e9edf7;--mute:#8b97b5;--green:#1f9d57;--red:#e0405a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:radial-gradient(1100px 480px at 75% -10%,#15275a,transparent),var(--bg);color:var(--ink);font:15px/1.5 'Be Vietnam Pro',system-ui,sans-serif}
+.num,h1,h2,h3,.ov,.vsx{font-family:Oswald,'Arial Narrow',Impact,sans-serif}
+.hidden{display:none!important}
+.wrap{max-width:980px;margin:0 auto;padding:14px}
+button,select{font:inherit;color:inherit}
+button{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:9px 13px;cursor:pointer}
+button:hover{border-color:var(--gold)}button:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+select{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px;width:100%}
+.btn.gold{background:linear-gradient(#f2d36e,#c79a22);color:#241a06;border:0;font-weight:700;letter-spacing:.03em}
+.btn.big{width:100%;padding:13px;font:700 1.15rem Oswald,sans-serif;margin-top:10px}
+.logo{font:700 2.2rem/1 Oswald,Impact,sans-serif;letter-spacing:.06em;margin:.4em 0 .1em}.logo span{color:var(--gold)}
+.sub{color:var(--mute);margin:0 0 14px}
+.clubs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:12px}
+.club{display:grid;justify-items:center;gap:2px;padding:14px 8px;background:linear-gradient(180deg,var(--panel2),var(--panel))}
+.club .num{font-size:1.6rem;color:var(--gold)}.club small{color:var(--mute)}
+.bdg{display:inline-grid;place-items:center;font-family:Oswald,sans-serif;font-weight:700;color:#fff;text-shadow:0 1px 2px #000b;background:linear-gradient(150deg,var(--a),var(--b));border:2px solid #fff8;border-radius:30% 30% 50% 50%/20% 20% 60% 60%;flex:none}
+.top{display:flex;align-items:center;gap:12px}.top h2{margin:0;font-size:1.5rem}.top small{color:var(--mute)}.bud{margin-left:auto;font-size:1.4rem;color:var(--gold)}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin:12px 0;padding-bottom:4px}.tabs button{white-space:nowrap}.tabs .on{background:var(--gold);color:#241a06;border-color:var(--gold);font-weight:600}
+.panel{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.panel h3{margin:0 0 8px;font-size:1.1rem;letter-spacing:.04em}
+.vs{display:flex;align-items:center;justify-content:space-around;gap:6px;margin:8px 0}.vs>div{display:grid;justify-items:center;gap:3px;text-align:center}.vs .num{font-size:1.6rem;color:var(--gold)}.vsx{font-size:1.8rem;color:var(--mute)}
+.f{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;margin-right:5px;font:700 12px Oswald;font-style:normal;color:#fff}.f.w{background:var(--green)}.f.d{background:#8a8f9c}.f.l{background:var(--red)}
+.lrow{display:flex;align-items:center;gap:8px;padding:5px 2px;border-bottom:1px solid #ffffff10}.lrow .num{margin-left:auto}.lrow.me{color:var(--gold)}
+.tb{width:100%;border-collapse:collapse;font-size:.92rem}.tb th{color:var(--mute);font-weight:600;text-align:center;padding:5px 3px}.tb td{padding:6px 3px;text-align:center;border-top:1px solid #ffffff10}.tb td:nth-child(2){text-align:left}.tb tr.me td{color:var(--gold);font-weight:600}
+.st2 td{padding:7px}.st2 td:nth-child(2){text-align:center;color:var(--mute)}
+.ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;align-items:end;margin-bottom:10px}.ctrls label{font-size:.8rem;color:var(--mute);display:grid;gap:3px}
+.hint{color:var(--mute);font-size:.85rem;margin:6px 0 10px}
+.pitch{position:relative;width:100%;max-width:430px;margin:0 auto 12px;aspect-ratio:2/2.7;border-radius:12px;background:repeating-linear-gradient(180deg,#1c7a43 0 9%,#1f8a4b 9% 18%);border:2px solid #ffffff55;overflow:hidden}
+.pitch::before{content:'';position:absolute;left:0;right:0;top:50%;border-top:2px solid #ffffff55}
+.slot{position:absolute;transform:translate(-50%,50%);width:68px;text-align:center;border:0;background:none;padding:0;color:#fff;font:600 11px 'Be Vietnam Pro',sans-serif;text-shadow:0 1px 3px #000}
+.slot i{display:grid;place-items:center;width:40px;height:40px;margin:0 auto 2px;border-radius:50%;font:700 17px Oswald;font-style:normal;color:#1a1305;background:linear-gradient(#f6dc7d,#b98a1d);border:2px solid #fff}
+.slot.sel i{outline:3px solid #4fd1ff}.slot.bad i{background:linear-gradient(#ffb36b,#d56a1a)}
+.list{display:grid;gap:5px}.row{display:grid;grid-template-columns:34px 1fr auto 36px 52px;gap:8px;align-items:center;text-align:left;padding:7px 10px}
+.row.sel{border-color:#4fd1ff;box-shadow:0 0 0 2px #4fd1ff55}.row em{font-style:normal;color:var(--mute);font-size:.78rem;text-align:right}.row small{color:var(--mute)}
+.pp{font:700 .8rem Oswald;color:#241a06;background:var(--gold);border-radius:5px;padding:1px 5px;text-align:center}.rn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mrow{display:grid;grid-template-columns:34px 1fr 36px auto;gap:8px;align-items:center;padding:6px 0;border-top:1px solid #ffffff10}.mrow small{color:var(--mute)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:14px;justify-items:center}
+.card{width:128px;height:178px;border-radius:12px 12px 24px 24px/12px 12px 32px 32px;position:relative;overflow:hidden;background:linear-gradient(155deg,var(--c1),var(--c2));color:#241a06;box-shadow:0 8px 20px #0009,inset 0 0 0 2px #fff6}
+.card::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,#ffffff55 48%,transparent 60%);pointer-events:none}
+.card.gold{--c1:#f6dc7d;--c2:#b98a1d}.card.silver{--c1:#eef1f5;--c2:#8f9aa6}.card.bronze{--c1:#e5b07c;--c2:#8b5a2b}.card.elite{--c1:#3a2f63;--c2:#0b0a14;color:#f0d98a}
+.card .cl{position:absolute;left:8px;top:8px;display:grid;gap:2px;justify-items:center;line-height:1}.card .ov{font-size:30px;font-weight:700}.card .cl span{font:600 11px Oswald}
+.card .fc{position:absolute;right:6px;top:6px;width:78px;line-height:0}
+.card .nm{position:absolute;left:4px;right:4px;top:100px;text-align:center;font:700 14px Oswald;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-top:1px solid #0003;padding-top:2px}
+.card .st{position:absolute;left:10px;right:10px;bottom:13px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px 4px;font-size:9.5px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000c;border:1px solid var(--gold);padding:9px 16px;border-radius:20px;z-index:50}
+#mv{position:fixed;inset:0;z-index:20;background:radial-gradient(900px 400px at 50% 0,#15275a,transparent),var(--bg);overflow:auto;padding-top:env(safe-area-inset-top,0px)}
+.mvw{max-width:900px;margin:0 auto;padding:10px}
+.sb{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-bottom:8px}.tm{display:flex;align-items:center;gap:8px}.tm.r{justify-content:flex-end;text-align:right}
+.sc{text-align:center}.sc b{display:block;font:700 2rem/1 Oswald;letter-spacing:.08em}.sc small{color:var(--gold);font:600 1rem Oswald}
+.stage{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line)}.stage canvas{display:block;width:100%;aspect-ratio:105/68}
+#flash{position:absolute;inset:0;display:grid;place-items:center;font:700 clamp(1.6rem,7vw,3rem) Oswald;color:#fff;text-shadow:0 0 20px var(--gold),0 3px 0 #000;background:#0005;pointer-events:none}
+.ctl{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0}.ctl .on{background:var(--gold);color:#241a06;border-color:var(--gold)}.ctl .sep{flex:1}
+#now{min-height:1.5em;color:var(--mute);font-size:.9rem;margin-bottom:6px}
+#feed{max-height:200px;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px}#feed p{margin:0 0 5px;font-size:.9rem;color:var(--mute)}#feed p.imp{color:var(--ink);font-weight:600}
+#mvend{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--gold);border-radius:12px;padding:14px;margin-top:10px}#mvend h3{margin:0 0 10px;font-size:1.2rem}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" class="hidden"></div>
+<div id="mv" class="hidden"><div class="mvw">
+  <div class="sb"><div class="tm" id="mvh"></div><div class="sc"><b id="mvs">0 - 0</b><small id="mvt">0'</small></div><div class="tm r" id="mva"></div></div>
+  <div class="stage"><canvas id="c2d"></canvas><canvas id="c3d" class="hidden"></canvas><div id="flash" class="hidden"></div></div>
+  <div class="ctl"><button id="pp" aria-label="Tạm dừng hoặc tiếp tục">⏸</button><button data-sp="1" class="on">1×</button><button data-sp="2">2×</button><button data-sp="4">4×</button><button id="skip">⏭ Tua nhanh</button><span class="sep"></span><button id="v2" class="on">2D</button><button id="v3">3D</button></div>
+  <div id="now"></div><div id="feed"></div><div id="mvend" class="hidden"></div>
+</div></div>
+<script>
+/*ENGINE_START*/
+const rnd = (a, b) => a + Math.random() * (b - a), ri = (a, b) => Math.floor(rnd(a, b + 1)), pick = a => a[Math.floor(Math.random() * a.length)], cl = (v, a, b) => Math.max(a, Math.min(b, v));
+const KEYS = ['pac', 'sho', 'pas', 'dri', 'def', 'phy'];
+const POS_W = { GK: { def: .7, phy: .1, pac: .05, pas: .05, dri: .05, sho: .05 }, DF: { def: .4, phy: .2, pac: .15, pas: .1, dri: .08, sho: .07 }, MF: { pas: .3, dri: .22, def: .15, sho: .1, pac: .1, phy: .13 }, FW: { sho: .32, dri: .2, pac: .2, pas: .1, phy: .12, def: .06 } };
+const PROF = { GK: [.6, .45, .62, .55, 1.12, .8], DF: [.85, .55, .75, .7, 1.1, 1.05], MF: [.85, .85, 1.1, 1.1, .85, .9], FW: [1.1, 1.1, .85, 1.05, .45, .85] };
+const ovr = p => Math.round(Object.entries(POS_W[p.pos]).reduce((s, [k, w]) => s + p.st[k] * w, 0));
+const PIDX = { DF: 0, MF: 1, FW: 2 };
+const eff = (p, pos) => p.pos === pos ? p.ov : (pos === 'GK' || p.pos === 'GK') ? p.ov * .4 : p.ov - Math.abs(PIDX[p.pos] - PIDX[pos]) * 9;
+const FORMS = {
+  '4-4-2': [['GK', .04, .5], ['DF', .22, .15], ['DF', .22, .38], ['DF', .22, .62], ['DF', .22, .85], ['MF', .5, .15], ['MF', .5, .38], ['MF', .5, .62], ['MF', .5, .85], ['FW', .78, .38], ['FW', .78, .62]],
+  '4-3-3': [['GK', .04, .5], ['DF', .22, .15], ['DF', .22, .38], ['DF', .22, .62], ['DF', .22, .85], ['MF', .5, .27], ['MF', .46, .5], ['MF', .5, .73], ['FW', .78, .18], ['FW', .82, .5], ['FW', .78, .82]],
+  '3-5-2': [['GK', .04, .5], ['DF', .22, .27], ['DF', .22, .5], ['DF', .22, .73], ['MF', .46, .1], ['MF', .5, .3], ['MF', .45, .5], ['MF', .5, .7], ['MF', .46, .9], ['FW', .78, .38], ['FW', .78, .62]],
+  '4-2-3-1': [['GK', .04, .5], ['DF', .22, .15], ['DF', .22, .38], ['DF', .22, .62], ['DF', .22, .85], ['MF', .42, .36], ['MF', .42, .64], ['MF', .62, .18], ['MF', .64, .5], ['MF', .62, .82], ['FW', .82, .5]]
+};
+const ALL = [{"n": "Man City", "s": "MCI", "c1": "#6cabdd", "c2": "#1c2c5b"}, {"n": "Arsenal", "s": "ARS", "c1": "#ef0107", "c2": "#7a0004"}, {"n": "Aston Villa", "s": "AVL", "c1": "#670e36", "c2": "#95bfe5"}, {"n": "Brighton", "s": "BHA", "c1": "#0057b8", "c2": "#e8ecf5"}, {"n": "Chelsea", "s": "CHE", "c1": "#034694", "c2": "#0a1f44"}, {"n": "Crystal Palace", "s": "CRY", "c1": "#1b458f", "c2": "#c4122e"}, {"n": "Everton", "s": "EVE", "c1": "#003399", "c2": "#7fa3e8"}, {"n": "Liverpool", "s": "LIV", "c1": "#c8102e", "c2": "#7a0a1c"}, {"n": "Man United", "s": "MUN", "c1": "#da291c", "c2": "#fbe122"}, {"n": "Tottenham", "s": "TOT", "c1": "#132257", "c2": "#e8ecf5"}, {"n": "Bournemouth", "s": "BOU", "c1": "#da291c", "c2": "#111111"}, {"n": "Brentford", "s": "BRE", "c1": "#e30613", "c2": "#e8ecf5"}, {"n": "Coventry", "s": "COV", "c1": "#59c3f0", "c2": "#0b2440"}, {"n": "Fulham", "s": "FUL", "c1": "#e8ecf5", "c2": "#222222"}, {"n": "Hull City", "s": "HUL", "c1": "#f5a31a", "c2": "#111111"}, {"n": "Ipswich", "s": "IPS", "c1": "#3a64a3", "c2": "#e8ecf5"}, {"n": "Leeds", "s": "LEE", "c1": "#e8ecf5", "c2": "#1d428a"}, {"n": "Newcastle", "s": "NEW", "c1": "#2b2b2b", "c2": "#e8e8e8"}, {"n": "Nottm Forest", "s": "NFO", "c1": "#dd0000", "c2": "#e8ecf5"}, {"n": "Sunderland", "s": "SUN", "c1": "#eb172b", "c2": "#e8ecf5"}, {"n": "West Ham", "s": "WHU", "c1": "#7a263a", "c2": "#1bb1e7"}, {"n": "Wolves", "s": "WOL", "c1": "#fdb913", "c2": "#231f20"}, {"n": "Burnley", "s": "BUR", "c1": "#6c1d45", "c2": "#99d6ea"}, {"n": "Leicester", "s": "LEI", "c1": "#003090", "c2": "#fdbe11"}, {"n": "Southampton", "s": "SOU", "c1": "#d71920", "c2": "#e8ecf5"}, {"n": "Sheffield Utd", "s": "SHU", "c1": "#ee2737", "c2": "#111111"}, {"n": "Middlesbrough", "s": "MID", "c1": "#e0232a", "c2": "#e8ecf5"}, {"n": "Millwall", "s": "MIL", "c1": "#001d5c", "c2": "#e8ecf5"}, {"n": "Birmingham", "s": "BIR", "c1": "#0a4ea3", "c2": "#e8ecf5"}, {"n": "Blackburn", "s": "BLA", "c1": "#0066b3", "c2": "#e8ecf5"}, {"n": "Charlton", "s": "CHA", "c1": "#d4021d", "c2": "#e8ecf5"}, {"n": "Derby", "s": "DER", "c1": "#e8ecf5", "c2": "#111111"}, {"n": "Norwich", "s": "NOR", "c1": "#00a650", "c2": "#fff200"}, {"n": "Portsmouth", "s": "POR", "c1": "#001489", "c2": "#e8ecf5"}, {"n": "Preston", "s": "PRE", "c1": "#e8ecf5", "c2": "#1c2c5b"}, {"n": "Stoke", "s": "STK", "c1": "#e03a3e", "c2": "#e8ecf5"}, {"n": "Swansea", "s": "SWA", "c1": "#e8ecf5", "c2": "#111111"}, {"n": "Watford", "s": "WAT", "c1": "#fbee23", "c2": "#ed2127"}, {"n": "West Brom", "s": "WBA", "c1": "#122f67", "c2": "#e8ecf5"}, {"n": "Wrexham", "s": "WRE", "c1": "#d71920", "c2": "#e8ecf5"}];
+let CLUBS = ALL.slice(0, 20);
+/* Cầu thủ thật theo EA FC 27: [tên, vị trí, tổng, tuổi, pac, sho, pas, dri, def, phy]. Tuổi: ngôi sao theo thực tế, còn lại ước lượng (file không có tuổi). */
+const REAL = {"MCI":[["E. Haaland","FW",91,25,96,97,80,89,56,97],["G. Donnarumma","GK",89,27,46,45,72,45,97,50],["Rúben Dias","DF",87,29,70,56,81,81,97,95],["E. Fernández","MF",86,26,74,84,92,89,80,82],["R. Cherki","FW",86,22,83,88,94,97,50,76],["J. Gvardiol","DF",85,24,82,74,80,81,89,86],["M. Guéhi","DF",85,26,77,54,78,80,93,90],["A. Semenyo","FW",85,26,86,89,83,88,50,84],["E. Anderson","MF",84,24,73,76,88,87,86,83],["P. Foden","MF",84,26,86,91,91,97,66,62],["J. Doku","FW",84,24,96,80,83,93,45,77],["N. O'Reilly","DF",83,21,86,73,81,82,84,84],["Matheus Nunes","DF",83,27,92,75,85,84,83,80],["J. Grealish","MF",82,31,76,83,89,93,60,74],["A. Khusanov","DF",82,22,93,44,69,73,88,85],["M. Kovačić","MF",81,32,63,80,86,87,79,74],["Nico González","MF",81,25,70,75,84,82,83,82],["R. Aït-Nouri","DF",81,28,90,58,82,90,83,75],["Savinho","FW",80,26,94,79,83,91,41,59],["G. Rulli","GK",80,34,52,45,80,45,91,50],["R. Lewis","DF",77,25,82,62,81,86,81,65],["Vitor Reis","DF",76,20,79,39,66,74,82,81],["A. Bah","DF",73,28,73,33,61,62,81,83],["C. Echeverri","MF",73,20,93,74,77,86,45,56],["I. Kaboré","DF",72,26,89,47,67,75,69,77],["M. Bettinelli","GK",69,34,30,45,69,45,78,50],["S. Mfuni","DF",69,28,77,40,60,69,71,72],["J. Heskey","MF",65,26,71,61,62,67,60,70]],"ARS":[["Gabriel","DF",89,28,78,58,78,80,97,97],["David Raya","GK",88,31,57,45,88,45,97,50],["D. Rice","MF",88,27,78,81,92,87,91,90],["W. Saliba","DF",88,25,86,50,77,82,97,91],["B. Saka","FW",87,25,86,89,92,94,67,80],["V. Gyökeres","FW",86,28,87,93,78,84,50,93],["M. Ødegaard","MF",86,27,73,86,96,95,74,71],["Bruno Guimarães","MF",86,23,65,81,91,90,86,86],["J. Timber","DF",84,25,83,55,83,85,90,85],["P. Hincapié","DF",84,25,89,54,77,78,90,87],["E. Konsa","DF",84,25,77,61,78,81,92,86],["Zubimendi","MF",84,27,71,77,88,86,86,81],["E. Eze","MF",84,28,81,87,89,94,64,75],["Mikel Merino","MF",83,26,57,85,86,85,87,85],["C. Tzolis","FW",82,22,87,85,84,88,43,76],["R. Calafiori","DF",82,24,76,73,81,82,85,83],["B. White","DF",81,28,74,55,81,81,87,83],["K. Havertz","FW",81,27,76,86,84,87,55,79],["N. Madueke","FW",80,24,91,78,77,86,48,72],["Cristhian Mosquera","DF",78,30,79,53,70,71,84,82],["Fábio Vieira","MF",78,24,81,80,85,85,63,63],["Kepa","GK",78,31,47,45,82,45,89,50],["M. Lewis-Skelly","DF",78,20,75,64,79,81,80,81],["R. Nelson","FW",75,22,83,76,79,86,43,55],["I. Meslier","GK",71,30,39,45,68,45,80,50],["T. Setford","GK",63,26,43,45,63,45,69,50]],"AVL":[["B. Kamara","MF",84,23,73,65,87,87,92,87],["J. Mcginn","MF",83,29,72,83,84,85,81,87],["L. Goretzka","MF",82,31,79,80,82,82,82,84],["M. Cash","DF",81,26,76,73,81,82,84,82],["Pau Torres","DF",81,24,73,48,82,76,90,81],["A. Onana","MF",81,29,79,74,80,80,87,88],["E. Buendía","MF",80,26,70,83,86,89,71,65],["J. Manzambi","MF",80,30,77,80,79,89,76,77],["I. Maatsen","DF",79,22,93,71,81,87,79,69],["N. Jackson","FW",79,25,81,82,74,84,45,81],["João Gomes","MF",78,30,60,72,80,81,82,82],["A. Wan-Bissaka","DF",78,28,84,56,73,78,81,78],["M. Ruggeri","DF",78,29,83,66,79,76,78,80],["L. Bailey","FW",77,30,89,76,76,85,41,61],["T. Abraham","FW",77,29,79,83,72,79,43,79],["R. Barkley","MF",77,32,58,82,83,82,70,71],["T. Mings","DF",77,33,65,52,75,69,84,85],["A. Garnacho","FW",77,22,90,81,76,83,41,57],["V. Lindelöf","DF",77,32,58,59,79,76,85,79],["M. Bizot","GK",77,28,43,45,71,45,88,50],["Z. Suzuki","GK",76,30,58,45,76,45,85,50],["T. Harwood-Bellis","DF",75,22,70,48,67,71,80,84]],"BHA":[["B. Verbruggen","GK",81,24,49,45,81,45,93,50],["L. Vušković","DF",81,24,62,70,70,73,91,90],["K. Mitoma","FW",81,29,87,80,80,90,61,67],["C. Baleba","MF",80,25,78,74,80,83,82,82],["F. Kadioğlu","DF",80,30,85,74,82,86,82,73],["P. Groß","MF",79,29,43,80,90,84,77,77],["M. Wieffer","DF",79,24,71,71,80,79,82,80],["Y. Ayari","MF",79,22,73,80,81,84,78,68],["O. Boscagli","DF",78,27,66,59,81,81,84,79],["M. De Cuyper","DF",78,25,80,77,84,81,77,76],["D. Gómez","MF",78,24,73,79,79,80,76,79],["M. O'Riley","MF",77,30,65,81,83,80,71,73],["L. Dunk","DF",77,34,45,61,75,73,87,88],["G. Rutter","MF",77,30,79,79,79,83,65,75],["J. Hinshelwood","MF",77,22,69,74,79,79,77,75],["P. David","FW",76,30,76,84,65,72,34,90],["Igor Julio","DF",75,28,68,48,67,63,81,85],["M. Symonds","MF",75,30,71,72,75,79,73,76]],"CHE":[["M. Caicedo","MF",86,25,77,76,85,89,92,90],["C. Palmer","MF",85,24,84,92,94,94,59,73],["E. Martínez","GK",85,29,49,45,82,45,97,50],["M. Rogers","MF",84,24,81,87,87,89,72,83],["R. James","DF",84,28,79,74,86,81,86,85],["João Pedro","FW",83,24,83,89,80,90,44,80],["M. Lacroix","DF",82,26,91,50,66,72,88,87],["M. Ramírez","FW",81,22,92,82,76,84,34,86],["Pedro Neto","FW",81,26,95,80,81,86,44,74],["Robert Sánchez","GK",80,28,54,45,78,45,91,50],["L. Colwill","DF",80,23,74,49,77,77,87,84],["Estêvão","FW",80,19,94,81,80,89,38,62],["D. Welbeck","FW",80,35,62,90,81,85,53,85],["W. Fofana","DF",79,25,82,46,67,76,85,82],["M. Gusto","DF",79,29,86,59,79,83,79,77],["M. Palestra","DF",78,28,92,67,71,82,72,83],["R. Lavia","MF",78,30,72,58,80,84,83,78],["E. Emegha","FW",78,30,93,81,65,74,36,83],["M. Penders","GK",78,25,36,45,80,45,90,50],["A. Disasi","DF",77,26,61,57,69,67,86,87],["T. Adarabioyo","DF",77,26,73,52,69,69,83,84],["J. Gittens","FW",77,27,96,76,70,86,31,59],["L. Delap","FW",77,23,81,82,65,80,35,84],["M. Sarr","DF",77,25,76,46,66,65,86,83],["J. Acheampong","DF",75,29,78,53,70,72,78,76],["Dário Essugo","MF",75,28,76,65,73,78,78,80],["K. Páez","MF",74,23,85,75,77,84,53,63],["A. Anselmino","DF",72,25,76,49,66,67,77,74]],"CRY":[["D. Muñoz","DF",82,24,81,75,78,82,85,82],["A. Wharton","MF",82,22,61,70,92,87,84,76],["D. Henderson","GK",82,29,56,45,79,45,94,50],["I. Sarr","FW",81,25,91,84,80,84,44,73],["J. Mateta","FW",81,29,80,87,74,81,47,86],["Mingueza","DF",80,24,82,73,83,81,80,80],["C. Richards","DF",80,25,74,36,69,75,90,87],["Q. Timber","MF",79,25,78,79,77,81,76,85],["Yeremy Pino","FW",79,25,83,82,88,89,46,59],["D. Kamada","MF",79,24,73,80,84,85,72,71],["T. Mitchell","DF",79,25,81,60,75,80,83,79],["E. Guessand","FW",78,27,82,80,77,82,40,76],["W. Benítez","GK",78,26,42,45,72,45,90,50],["A. Khalaili","FW",78,23,86,74,73,82,68,74],["J. Strand Larsen","FW",77,29,78,84,67,75,37,85],["B. Chilwell","DF",77,29,73,65,82,79,81,74],["W. Hughes","MF",77,28,44,70,84,83,81,75],["D. Mcneil","MF",76,25,72,81,82,82,60,70],["J. Canvot","DF",76,23,80,37,67,73,81,81],["C. Doucouré","MF",76,29,61,62,79,81,81,77],["T. Tomiyasu","DF",76,29,72,38,72,76,83,81],["J. Lerma","MF",76,27,70,74,73,77,80,80],["E. Nketiah","FW",75,26,84,79,68,80,29,68],["H. Ahanor","DF",74,28,72,49,64,72,82,73]],"EVE":[["J. Pickford","GK",85,32,58,45,89,45,97,50],["J. Garner","MF",82,24,69,76,87,82,85,82],["K. Dewsbury-Hall","MF",81,22,72,81,86,85,74,75],["J. Tarkowski","DF",80,33,51,57,74,69,91,94],["C. Nørgaard","MF",79,23,53,74,84,80,86,85],["J. Branthwaite","DF",79,30,78,47,69,66,87,83],["B. Johnson","FW",78,30,89,80,77,81,47,62],["H. Hackney","MF",77,27,71,72,78,81,74,78],["Beto","FW",77,29,80,83,66,75,31,89],["V. Mykolenko","DF",77,22,78,60,75,76,80,77],["A. Maitland-Niles","DF",77,25,83,69,78,80,76,78],["M. Keane","DF",76,33,51,67,71,68,86,85],["J. O'Brien","DF",76,22,78,53,70,65,79,83],["T. Iroegbunam","MF",76,22,71,64,74,80,81,78],["T. Barry","FW",76,33,85,80,70,78,30,78],["T. Dibling","MF",74,23,83,74,78,84,45,71],["H. Armstrong","MF",73,27,70,67,75,75,72,74]],"LIV":[["V. Van Dijk","DF",88,35,78,68,80,78,97,93],["Alisson","GK",87,33,49,45,82,45,97,50],["A. Isak","FW",86,26,88,94,79,89,46,79],["F. Wirtz","MF",86,23,86,88,95,97,63,70],["D. Szoboszlai","MF",86,25,86,87,90,88,78,81],["H. Ekitiké","FW",85,24,93,90,79,91,40,80],["B. Barcola","FW",85,29,97,84,86,92,47,75],["R. Gravenberch","MF",85,24,84,81,86,88,85,85],["G. Mamardashvili","GK",83,25,45,45,75,45,96,50],["C. Gakpo","FW",82,27,81,87,84,85,51,78],["J. Frimpong","DF",81,25,97,70,82,90,80,70],["M. Kerkez","DF",81,22,88,63,79,82,80,83],["R. Araujo","DF",80,28,85,60,70,65,84,87],["F. Chiesa","FW",80,27,89,81,77,85,46,70],["C. Bradley","DF",79,25,84,67,76,80,81,78],["J. Gomez","DF",79,29,77,36,77,78,87,80],["W. Endo","MF",78,30,63,75,78,81,85,78],["J. Jacquet","DF",77,26,71,45,68,69,84,84],["K. Tsimikas","DF",76,29,81,59,76,76,77,75],["R. Ngumoha","FW",75,17,94,75,72,83,41,53]],"MUN":[["Bruno Fernandes","MF",89,31,75,93,97,93,76,83],["Y. Tielemans","MF",85,29,61,87,93,88,84,78],["Matheus Cunha","FW",84,27,82,91,84,89,49,78],["B. Mbeumo","FW",84,26,92,86,81,89,52,78],["M. De Ligt","DF",82,27,68,67,74,75,90,89],["L. Martínez","DF",82,29,73,66,83,82,89,82],["B. Šeško","FW",82,23,89,86,71,82,50,81],["H. Maguire","DF",82,33,46,68,80,76,94,94],["M. Rashford","FW",82,28,95,86,81,84,36,71],["S. Lammens","GK",82,24,46,45,77,45,95,50],["K. Mainoo","MF",81,21,71,75,82,88,83,80],["Andrey Santos","MF",80,25,73,74,80,83,84,82],["N. Mazraoui","DF",80,28,79,69,81,83,83,76],["L. Shaw","DF",79,31,70,62,82,79,83,84],["Amad","FW",79,24,88,80,79,88,59,58],["L. Yoro","DF",78,20,76,48,67,72,86,80],["Diogo Dalot","DF",78,27,81,66,76,77,77,81],["P. Dorgu","FW",78,26,88,75,74,79,74,75]],"TOT":[["S. Tonali","MF",85,26,83,78,86,84,85,88],["Pedro Porro","DF",83,26,82,79,88,85,84,81],["O. Marmoush","FW",82,27,91,87,80,87,38,73],["M. Senesi","DF",82,29,66,51,81,79,91,88],["J. Maddison","MF",82,29,73,89,94,92,65,61],["J. Van Hecke","DF",81,29,62,55,83,78,90,88],["X. Simons","MF",81,23,81,82,85,90,67,72],["D. Kulusevski","MF",81,26,73,83,87,88,67,74],["M. Van De Ven","DF",81,25,93,63,68,75,83,84],["Mateus Fernandes","MF",80,27,71,77,83,84,79,77],["A. Robertson","DF",80,28,78,68,84,82,83,79],["P. Sarr","MF",79,25,70,70,81,83,82,78],["R. Bentancur","MF",79,29,64,73,82,81,83,77],["D. Udogie","DF",79,23,91,67,76,80,78,78],["K. Danso","DF",79,27,77,40,65,70,86,89],["D. Solanke","FW",79,28,76,85,72,82,48,81],["W. Odobert","FW",78,27,92,79,78,86,36,57],["M. Tel","FW",78,22,89,83,73,82,32,67],["Richarlison","FW",78,29,75,82,76,82,57,80],["C. Gallagher","MF",78,28,70,75,79,78,80,81],["L. Bergvall","MF",78,28,78,72,81,82,76,75]],"BOU":[["A. Scott","MF",81,29,72,75,84,86,80,77],["A. Truffert","DF",80,28,88,62,78,80,81,78],["E. Kroupi","FW",80,26,86,86,74,84,51,68],["M. Di Gregorio","GK",80,22,57,45,78,45,91,50],["Rayan","FW",79,30,88,81,77,83,38,77],["T. Adams","MF",79,28,82,65,78,81,84,80],["Đ. Petrović","GK",79,29,51,45,73,45,90,50],["M. Tavernier","FW",79,28,83,81,80,82,63,70],["B. Diakité","DF",79,28,75,52,72,76,86,84],["Evanilson","FW",79,24,81,84,75,83,43,81],["J. Kluivert","MF",79,27,94,86,85,89,50,68],["L. Cook","MF",78,22,73,68,81,82,80,75],["R. Christie","MF",78,25,70,75,80,81,77,78],["J. Hill","DF",78,24,78,47,69,74,85,82],["António Silva","DF",77,28,81,41,68,73,81,84],["A. Adli","FW",77,28,81,78,75,84,49,72],["Juanlu Sánchez","DF",76,30,83,71,76,78,74,76],["D. Brooks","MF",76,25,77,78,84,85,56,64],["Álvaro Rodríguez","FW",75,24,84,74,66,78,40,79],["J. Araujo","DF",74,28,87,39,68,74,75,76],["A. Tóth","MF",73,22,70,71,77,75,73,66],["A. Smith","DF",73,26,61,64,77,75,78,73],["V. Milosavljević","DF",72,22,61,47,63,63,79,84],["F. Forster","GK",71,22,29,45,67,45,81,50],["B. Gannon-Doak","MF",71,30,96,74,75,83,36,60],["M. Aarons","DF",70,22,80,46,68,75,69,74],["J. Soler","DF",68,23,77,51,64,71,71,62],["D. Jebbison","FW",68,22,87,67,53,64,32,78]],"BRE":[["Igor Thiago","FW",82,25,80,89,73,81,50,91],["M. Kayode","DF",81,25,86,54,77,81,83,85],["C. Kelleher","GK",80,28,49,45,79,45,92,50],["M. Damsgaard","MF",80,25,71,78,87,86,71,70],["M. Jensen","MF",80,29,68,77,87,83,75,77],["N. Collins","DF",79,30,64,41,68,74,90,91],["D. Ouattara","FW",79,29,89,78,77,84,58,70],["K. Schade","FW",79,22,95,78,74,81,33,76],["E. Diouf","DF",78,30,83,71,77,79,78,79],["S. Van Den Berg","DF",78,28,78,44,70,73,85,82],["Y. Yarmoliuk","MF",78,26,71,70,80,81,79,78],["V. Janelt","MF",78,26,59,76,80,79,82,82],["K. Ajer","DF",77,29,72,61,70,73,81,84],["K. Lewis-Potter","DF",77,27,82,75,79,83,77,69],["J. Anthony","FW",76,24,83,77,75,81,44,72],["C. Wilson","FW",76,30,71,84,72,81,48,68],["R. Henry","DF",76,25,86,51,72,81,80,68],["E. Pinnock","DF",75,25,62,46,65,69,87,79],["A. Hickey","DF",75,27,74,61,75,79,79,69],["Fábio Carvalho","MF",74,27,84,79,80,87,56,51],["A. Milambo","MF",73,22,75,73,75,80,67,64],["J. Dasilva","MF",71,26,66,73,74,76,66,63],["J. Meghoma","DF",68,23,80,49,68,76,67,65],["J. Schuster","DF",67,24,64,45,56,55,73,73]],"COV":[["Y. Gboho","FW",77,30,84,75,76,87,41,70],["C. Rushworth","GK",76,27,54,45,75,45,86,50],["M. Grimes","MF",76,29,61,66,82,80,75,76],["G. Hamer","MF",75,26,70,73,78,75,72,74],["M. Van Ewijk","DF",75,29,95,61,70,76,71,75],["F. Onyeka","MF",75,28,78,69,71,77,76,82],["J. Rudoni","MF",75,22,73,73,76,79,66,76],["B. Thomas","DF",74,30,69,56,56,62,78,88],["H. Wright","FW",74,22,86,76,64,74,36,78],["A. Amenda","DF",74,29,76,36,61,62,81,85],["T. Awoniyi","FW",74,30,73,80,67,76,39,80],["T. Sakamoto","MF",74,24,79,70,75,82,66,68],["L. Kitching","DF",73,27,67,46,63,67,76,87],["B. Thomas-Asante","FW",73,30,84,72,65,73,46,81],["C. Yirenkyi","MF",73,28,76,66,68,74,71,90],["V. Torp","MF",73,23,63,75,77,75,70,69],["L. Tchaouna","FW",73,22,88,75,68,74,39,65],["J. Dasilva","DF",73,26,83,54,76,82,73,69],["K. Kesler-Hayden","DF",72,24,92,59,70,75,69,69],["S. Chérif","FW",72,28,86,71,60,72,35,78],["L. Woolfenden","DF",72,23,68,39,66,67,77,80],["J. Eccles","MF",71,23,71,67,71,71,71,73],["J. Latibeaudiere","DF",71,26,59,44,63,67,77,82],["E. Simms","FW",71,26,75,76,60,69,38,82],["O. Dovin","GK",70,28,48,45,68,45,78,50],["D. Bentley","GK",70,26,43,45,68,45,79,50],["J. Bidwell","DF",68,26,60,51,67,65,71,77],["B. Wilson","GK",68,30,42,45,62,45,76,50]],"FUL":[["A. Iwobi","MF",80,30,73,82,84,87,68,77],["A. Robinson","DF",80,22,92,61,78,80,80,80],["J. Andersen","DF",79,27,47,65,79,73,88,91],["B. Leno","GK",79,34,45,45,75,45,91,50],["S. Berge","MF",79,22,62,71,82,77,82,91],["K. Tete","DF",78,23,78,53,74,78,83,80],["C. Bassey","DF",78,24,81,48,67,72,81,89],["E. Smith Rowe","MF",77,23,74,80,83,87,60,67],["R. Sessegnon","DF",77,30,83,73,79,83,78,69],["H. Larsson","MF",77,26,76,76,75,81,75,80],["Jorge Cuenca","DF",76,30,68,45,68,68,85,81],["O. Bobb","MF",76,24,92,77,84,92,46,54],["D. Affengruber","DF",76,22,77,47,61,73,80,87],["Kevin","FW",76,29,87,75,75,87,38,63],["Rodrigo Muniz","FW",76,22,73,83,66,79,48,82],["Gonzalo","FW",75,28,76,80,68,75,50,77],["T. Castagne","DF",75,22,71,61,75,77,78,76],["J. King","MF",74,24,75,72,79,84,67,58],["T. Cairney","MF",74,24,51,77,82,79,72,68],["S. Charles","MF",73,23,67,67,75,74,72,79],["B. Lecomte","GK",73,25,40,45,74,45,83,50],["H. Reed","MF",72,28,57,68,77,74,77,67],["Manuel Ángel","MF",65,25,73,58,69,72,55,54]],"HUL":[["K. Tzolakis","GK",79,22,56,45,76,45,90,50],["H. Morita","MF",78,25,72,75,79,82,76,82],["S. Thomas","FW",75,30,89,73,76,75,50,72],["B. Norton-Cuffy","DF",75,24,87,54,71,80,75,73],["N. Mendy","DF",75,25,83,49,61,65,76,85],["C. Hughes","DF",74,28,72,44,67,69,77,84],["E. Stroud","DF",74,23,87,68,70,72,69,77],["M. Cho","FW",74,25,86,74,75,82,32,65],["C. Mouzakitis","MF",73,22,73,66,77,77,65,69],["J. Gelhardt","MF",73,30,82,79,75,81,47,77],["I. Ansah","FW",73,22,82,74,63,76,30,76],["M. Belloumi","FW",73,28,82,74,73,78,39,61],["L. Millar","MF",72,24,90,71,71,80,57,64],["P. Mcnair","DF",72,22,62,64,69,69,75,77],["R. Giles","DF",72,25,90,64,75,77,66,71],["M. Targett","DF",72,22,65,56,75,74,77,73],["R. Slater","MF",72,23,73,64,72,76,70,72],["R. Vaz","FW",71,27,87,73,59,70,34,69],["M. Crooks","MF",71,23,56,71,70,71,69,87],["E. Matazo","MF",70,27,70,62,69,75,69,74],["O. Zambrano","MF",70,23,71,61,70,72,69,71],["L. Gourna-Douath","MF",70,26,78,59,67,73,72,75],["S. Ajayi","DF",70,28,70,51,55,62,72,81],["L. Coyle","DF",70,23,71,55,68,69,69,77],["C. Drameh","DF",69,28,84,39,60,71,68,74],["A. Ömür","MF",69,26,82,67,72,75,57,60],["D. Gyabi","MF",68,24,70,61,66,71,66,74],["J. Hjertø-Dahl","MF",68,22,64,65,65,70,66,78]],"IPS":[["E. Palacios","MF",83,29,68,82,85,88,87,77],["J. Enciso","MF",78,29,89,85,83,94,44,64],["S. Lukić","MF",78,30,79,69,80,77,79,83],["D. Maeda","FW",78,26,92,77,70,76,64,77],["Florentino","MF",77,25,57,62,77,81,87,83],["K. Scherpen","GK",76,26,47,45,71,45,87,50],["Z. Flemming","FW",76,23,69,82,74,75,58,85],["L. Davis","DF",75,26,83,58,80,77,74,76],["A. Fatawu","FW",75,29,85,75,73,79,48,68],["J. Clarke","FW",75,25,81,76,73,81,45,66],["D. O'Shea","DF",75,27,75,39,62,64,81,85],["A. Matusiwa","MF",75,23,64,60,74,76,80,86],["I. Diop","DF",75,27,65,45,63,65,83,86],["J. Greaves","DF",74,25,71,45,68,69,79,83],["Emersonn","FW",74,28,84,75,64,79,33,76],["C. Kipré","DF",74,26,74,42,56,61,78,93],["C. Walton","GK",73,23,35,45,72,45,83,50],["M. Núñez","MF",73,26,65,74,77,77,67,73],["A. Ouattara","MF",73,29,83,66,76,81,54,71],["D. Furlong","DF",73,29,77,49,65,74,73,82],["A. Mehmeti","MF",72,22,80,74,72,78,58,70],["J. Taylor","MF",72,26,72,71,71,73,72,77],["K. Mcateer","MF",71,23,85,71,70,75,58,68],["A. Palmer","GK",71,24,40,45,70,45,80,50],["S. Egeli","MF",70,23,93,71,71,80,34,73],["K. Van Oevelen","GK",69,26,32,45,74,45,77,50],["A. Al Hamadi","FW",65,25,81,65,48,64,25,75]],"LEE":[["H. Wilson","FW",81,30,81,87,86,87,51,64],["E. Ampadu","MF",80,30,75,62,82,80,85,86],["A. Stach","MF",80,24,70,75,84,79,81,82],["D. Calvert-Lewin","FW",79,22,79,83,71,79,45,89],["J. Trafford","GK",79,25,47,45,78,45,90,50],["G. Gudmundsson","DF",78,25,90,67,76,80,75,78],["N. Elvedi","DF",78,26,76,45,68,70,85,84],["J. Rodon","DF",77,26,82,46,64,65,83,85],["J. Bijol","DF",77,22,68,64,69,67,83,86],["N. Okafor","FW",77,25,90,78,72,80,34,70],["J. Justin","DF",76,22,80,58,75,77,78,77],["Lucas Perri","GK",76,29,44,45,70,45,87,50],["L. Nmecha","FW",76,29,81,80,70,77,44,78],["M. Bard","DF",76,22,86,55,71,76,75,78],["J. Bogle","DF",76,29,82,61,75,80,76,77],["L. Ramazani","FW",76,27,93,72,71,81,43,67],["S. Longstaff","MF",76,29,60,74,82,78,77,72],["A. Tanaka","MF",76,30,71,74,78,81,76,72],["B. Aaronson","FW",76,30,82,75,78,81,64,66],["J. Bahoya","MF",76,26,97,75,76,86,54,67],["D. James","FW",75,28,91,73,71,78,52,60],["T. Muharemović","DF",75,27,66,32,63,70,85,87],["I. Gruev","MF",75,22,69,62,79,77,77,74],["W. Gnonto","FW",74,25,87,73,67,80,47,68],["Mateo Joseph","FW",72,23,83,74,60,71,46,73],["S. Chambers","MF",62,26,71,61,65,68,49,55]],"NEW":[["L. Hall","DF",83,22,85,71,88,89,87,75],["S. Botman","DF",81,29,66,47,72,75,92,90],["F. Schär","DF",81,34,56,75,83,80,90,83],["T. Livramento","DF",81,30,88,57,79,85,84,79],["M. Thiaw","DF",81,27,76,53,76,77,88,86],["Y. Wissa","FW",80,27,85,86,75,83,36,75],["H. Barnes","FW",80,29,85,84,78,84,46,69],["Joelinton","MF",80,30,70,74,78,81,84,92],["A. Elanga","FW",79,22,97,74,78,84,43,69],["J. Murphy","FW",79,23,80,81,82,83,64,70],["D. Burn","DF",79,26,52,46,76,73,89,94],["N. Pope","GK",78,34,43,45,64,45,90,50],["Fernandez-Pardo","FW",78,23,91,77,70,82,43,76],["J. Ramsey","MF",78,23,80,77,78,83,71,73],["B. Touré","FW",78,22,97,76,77,88,35,58],["L. Miley","MF",77,29,72,70,80,79,80,73],["L. Hornicek","GK",77,23,28,45,74,45,89,50],["J. Willock","MF",76,29,77,74,76,80,74,70],["A. Dedić","DF",76,27,86,65,75,83,71,81],["S. Steur","MF",72,22,74,56,74,78,67,70],["A. Bamba","MF",72,23,64,62,72,75,72,80],["L. Shahar","DF",60,28,73,46,59,64,60,55],["S. Neave","FW",59,24,67,62,55,62,25,52]],"NFO":[["M. Gibbs-White","MF",83,29,80,83,88,90,68,79],["Murillo","DF",82,28,84,60,72,76,87,88],["O. Diomande","DF",81,25,87,33,59,77,87,95],["C. Wood","FW",81,22,64,93,78,82,51,91],["M. Sels","GK",81,28,47,45,78,45,93,50],["N. Williams","DF",80,30,78,57,80,82,86,79],["N. Milenković","DF",80,27,62,55,71,69,90,93],["O. Aina","DF",79,29,90,65,74,77,80,78],["C. Hudson-Odoi","FW",78,26,82,80,80,85,55,68],["A. Kalimuendo","FW",78,26,83,83,69,83,38,76],["I. Sangaré","MF",78,27,64,72,79,78,83,88],["X. Schlager","MF",78,30,71,74,77,81,79,83],["N. Domínguez","MF",78,23,72,70,80,81,81,79],["Igor Jesus","FW",77,27,75,84,72,79,43,83],["D. Ndoye","FW",77,28,90,74,72,81,64,67],["O. Hutchinson","FW",76,25,83,77,76,83,59,62],["D. Bakwa","FW",76,28,90,75,75,80,33,67],["Jair Cunha","DF",75,26,73,44,65,64,80,85],["R. Yates","MF",75,23,55,69,75,75,83,83],["N. Savona","DF",75,23,73,58,74,74,79,76],["Morato","DF",75,22,61,45,65,68,83,88],["J. Mcatee","MF",73,23,78,77,78,83,49,64],["L. Netz","DF",73,24,76,54,75,78,75,71],["O. Richards","DF",71,25,80,52,68,77,73,67],["John Victor","GK",71,27,40,45,66,45,80,50],["T. Bindon","DF",70,23,60,51,64,69,74,78],["S. Benda","GK",68,27,38,45,63,45,76,50],["Z. Abbott","DF",63,27,66,37,55,57,66,69]],"SUN":[["G. Xhaka","MF",85,34,54,84,94,83,87,90],["N. Mukiele","DF",81,25,77,56,77,79,87,86],["R. Roefs","GK",81,23,53,45,77,45,93,50],["O. Alderete","DF",81,23,66,69,71,78,89,88],["N. Sadiki","MF",80,29,83,71,79,84,79,79],["Reinildo","DF",80,27,82,61,73,78,83,81],["E. Le Fée","MF",80,25,69,77,86,87,74,69],["D. Ballard","DF",78,25,68,51,66,68,86,90],["T. Meunier","DF",78,30,62,77,76,74,81,85],["T. Hume","DF",78,27,80,57,72,75,81,81],["B. Brobbey","FW",78,27,88,80,66,78,35,90],["H. Diarra","MF",77,26,74,74,79,81,75,75],["M. Fofana","FW",77,25,91,75,76,89,46,52],["C. Talbi","FW",77,24,92,76,75,84,55,59],["S. Adingra","FW",76,28,92,75,75,85,35,59],["W. Isidor","FW",75,30,81,79,67,77,37,78],["C. Rigg","MF",74,27,73,73,79,81,65,61],["L. O'Nien","DF",73,28,70,62,69,71,76,78],["N. Angulo","FW",73,29,82,73,73,78,42,63],["R. Mundle","FW",72,22,81,74,71,77,41,56],["A. Browne","MF",72,27,70,70,71,73,70,79],["J. Ta Bi","FW",69,28,88,68,62,74,39,53],["M. Ellborg","GK",68,30,44,45,66,45,76,50],["J. Seelt","DF",68,24,63,42,56,57,75,79],["J. Angulo","FW",62,29,82,64,43,60,25,64],["J. Ahoka","MF",61,30,72,41,56,63,67,69]],"WHU":[["J. Bowen","FW",83,29,82,88,85,89,53,78],["K. Mavropanos","DF",78,27,77,62,60,64,84,85],["T. Castellanos","FW",78,22,77,83,76,82,50,78],["J. Veltman","DF",77,30,68,55,73,76,84,80],["E. Álvarez","MF",77,28,72,64,74,78,84,88],["J. Todibo","DF",76,27,79,52,67,71,81,80],["T. Souček","MF",76,23,46,80,77,73,85,86],["K. Walker-Peters","DF",76,25,82,53,74,82,79,70],["M. Solomon","FW",76,24,90,78,78,85,49,47],["A. Areola","GK",75,25,43,45,72,45,85,50],["M. Hermansen","GK",74,27,48,45,75,45,83,50]],"WOL":[["R. Jiménez","FW",78,28,62,87,81,81,54,83],["L. Krejčí","DF",78,23,74,71,71,71,79,87],["André","MF",78,25,64,65,81,84,81,79],["K. Trippier","DF",77,29,60,69,88,80,84,72],["M. Munetsi","MF",76,26,70,76,75,75,79,83],["S. Bueno","DF",76,23,60,41,66,66,87,87],["José Sá","GK",75,26,49,45,70,45,85,50],["Rodrigo Gomes","FW",74,22,84,74,72,81,63,56],["S. Johnstone","GK",74,22,45,45,68,45,84,50],["J. Bellegarde","MF",74,22,81,66,74,81,72,65],["S. Kalajdžić","FW",74,25,60,82,79,78,55,74],["Mateus Mané","MF",74,23,81,74,78,80,55,68],["H. Hwang","FW",73,26,76,76,71,76,41,69],["D. Wolfe","DF",73,26,80,58,71,74,72,78],["J. James","MF",73,28,64,73,74,76,70,74],["Y. Mosquera","DF",73,28,87,36,56,59,78,82],["A. Armstrong","FW",73,27,76,77,69,76,38,71],["Fer López","FW",73,30,74,75,81,81,46,60],["J. Tchatchoua","DF",72,26,95,60,61,70,67,77],["João Virgínia","GK",72,26,50,45,66,45,81,50],["T. Doyle","MF",72,25,68,69,76,77,70,65],["R. Saïd","FW",72,23,86,71,64,77,27,68],["B. Traoré","MF",71,23,68,57,72,75,70,77],["N. Djiga","DF",70,22,73,33,54,63,76,79],["Pedro Lima","DF",68,25,79,52,71,75,69,61]],"BUR":[["J. Cullen","MF",77,30,60,70,82,81,81,76],["K. Walker","DF",76,24,83,65,74,73,75,78],["G. Coudert","GK",75,22,31,45,69,45,86,50],["Hannibal","MF",75,22,71,66,77,79,72,80],["M. Edwards","FW",75,25,87,75,77,87,37,51],["A. Ahmedhodžić","DF",75,23,74,46,64,65,80,85],["R. Hatate","MF",74,29,73,76,77,77,67,71],["B. Humphreys","DF",74,25,73,47,70,72,78,78],["C. Roberts","DF",74,30,76,65,75,76,75,71],["Z. Amdouni","FW",74,27,71,80,73,80,50,64],["Lucas Pires","DF",74,22,80,53,73,76,74,75],["A. Tuanzebe","DF",73,29,75,41,69,72,77,79],["J. Bruun Larsen","FW",73,29,77,73,72,76,57,68],["A. Broja","FW",72,27,72,78,60,77,36,76],["J. Worrall","DF",72,29,52,37,63,57,85,82],["M. Trésor","MF",72,25,86,75,80,83,46,55],["J. Beyer","DF",72,23,72,41,68,72,79,72],["L. Foster","FW",72,27,81,74,64,73,39,75],["J. Laurent","MF",72,28,72,64,67,73,74,83],["O. Sonne","DF",72,25,83,54,70,74,71,72],["U. Raghouber","MF",71,28,73,64,68,75,71,73],["H. Ekdal","DF",71,26,59,40,60,69,79,79],["A. Hountondji","FW",71,26,85,72,61,75,25,71],["M. Weiß","GK",70,30,34,45,68,45,79,50],["M. Alleyne","DF",70,27,74,38,62,70,74,76],["A. Barnes","FW",69,29,47,79,74,73,53,75],["A. Ramsey","MF",69,23,77,68,72,75,55,65],["D. Satpayev","FW",68,29,84,68,61,70,28,65]],"LEI":[["W. Faes","DF",74,24,59,48,63,69,83,84],["W. Burns","MF",72,25,93,70,67,76,63,74],["H. Souttar","DF",72,27,56,39,62,64,82,85],["J. Lundstram","MF",71,26,57,72,73,70,71,75],["E. Riis","FW",71,23,76,77,58,71,32,74],["C. Chaplin","MF",71,23,80,77,73,79,52,62],["W. Coulibaly","DF",71,30,75,54,68,73,71,73],["O. Skipp","MF",71,22,63,55,72,75,77,77],["S. Mavididi","MF",70,28,89,72,72,79,36,74],["J. Stolarczyk","GK",70,29,43,45,64,45,79,50],["B. De Cordova-Reid","MF",69,24,68,71,71,74,62,61],["H. Choudhury","DF",69,27,63,52,65,66,72,75],["C. Okoli","DF",69,25,62,37,52,62,75,83],["L. Cullen","MF",69,30,83,76,71,76,38,73],["T. Watson","MF",68,25,86,73,70,77,37,64],["L. Thomas","DF",68,30,73,46,69,70,69,67],["A. Mccarthy","GK",68,28,46,45,62,45,76,50],["B. Nelson","DF",68,22,71,39,59,66,72,75],["W. O'Hora","DF",68,30,56,45,61,60,73,84],["K. Doyle","MF",65,25,63,66,70,69,54,63],["M. Golding","MF",62,30,66,57,63,64,57,60]],"SOU":[["A. Ramsdale","GK",77,28,52,45,80,45,87,50],["K. Schlotterbeck","DF",76,26,71,39,62,65,86,82],["Léo Scienza","FW",75,27,86,76,77,84,34,59],["Y. Sugawara","DF",75,27,76,59,78,77,76,76],["C. Larin","FW",75,29,75,80,71,75,33,82],["D. Peretz","GK",75,29,42,45,73,45,85,50],["R. Manning","DF",74,23,76,69,78,77,74,73],["F. Downes","MF",74,29,68,64,74,77,75,81],["J. Ward-Prowse","MF",74,32,45,79,85,78,72,60],["F. Azaz","MF",74,28,77,76,77,78,61,72],["C. Jander","MF",73,24,74,59,76,77,70,76],["J. Bree","DF",73,26,70,55,70,69,74,81],["T. Fellows","MF",72,22,88,70,75,78,52,70],["J. Stephens","DF",72,22,50,50,69,71,81,79],["N. Wood","DF",72,22,78,31,55,62,78,81],["S. Edozie","MF",72,22,94,72,75,85,38,66],["Welington","DF",72,26,82,57,72,75,73,69],["M. Roerslev","DF",72,30,73,50,73,74,75,72],["B. Brereton Díaz","FW",71,26,79,72,66,71,42,73],["C. Archer","FW",71,26,84,73,61,74,27,67],["L. Dobbin","MF",71,28,92,74,69,80,48,66],["K. Matsuki","MF",70,26,75,67,69,74,65,73],["D. Downs","FW",70,22,81,74,59,70,30,73],["J. Quarshie","DF",69,24,84,36,51,55,71,79],["Juan Larios","DF",68,23,89,41,65,74,69,59],["G. Bazunu","GK",68,23,45,45,68,45,76,50],["D. Mubama","FW",68,24,76,70,53,69,32,75]],"SHU":[["C. O'Hare","MF",73,22,76,68,74,80,65,71],["M. Doherty","DF",73,22,58,67,73,73,78,76],["J. Ayew","FW",73,28,69,76,73,78,59,74],["J. Tanganga","DF",72,24,74,38,65,70,75,81],["H. Burrows","DF",72,28,78,67,75,75,69,71],["M. Cooper","GK",72,26,54,45,73,45,80,50],["K. Phillips","MF",72,28,56,69,76,74,75,69],["P. Bamford","FW",71,24,70,75,70,72,40,74],["J. Riedewald","MF",71,30,56,65,76,72,74,74],["S. Peck","MF",71,26,71,62,71,73,69,75],["K. Hoever","DF",71,26,75,58,70,73,70,73],["C. Ogbene","MF",70,28,91,65,66,72,65,72],["T. Cannon","FW",70,22,81,73,61,73,31,68],["J. Rothwell","MF",70,30,74,66,71,72,70,68],["O. Arblaster","MF",70,30,67,63,71,73,67,73],["M. Mcguinness","DF",70,25,59,42,57,65,76,84],["T. Chong","MF",70,26,80,68,73,74,57,65],["F. Seriki","DF",70,29,90,50,64,71,66,74],["I. Grbić","GK",70,28,28,45,68,45,80,50],["S. Mccallum","DF",70,28,80,57,65,68,69,72],["T. Campbell","FW",70,26,80,72,61,70,34,72],["J. Shackleton","DF",69,23,80,52,68,75,67,71],["R. Norrington-Davies","DF",68,27,71,48,65,68,69,70],["A. Davies","GK",68,23,40,45,65,45,76,50],["R. Donovan","MF",67,24,86,71,71,80,38,52],["N. Zätterström","DF",64,25,72,36,51,57,62,79]],"MID":[["S. Berhalter","MF",76,27,74,68,80,73,72,81],["R. Vítek","GK",75,24,48,45,74,45,85,50],["R. Pukštas","MF",74,25,72,74,71,79,74,74],["M. Whittaker","FW",74,22,80,76,71,77,41,70],["A. Morris","MF",74,29,79,59,68,77,76,90],["L. Ayling","DF",73,25,58,63,70,74,79,79],["C. Brittain","DF",73,30,83,56,71,75,70,79],["R. Mcgree","MF",72,23,79,69,71,75,65,75],["A. Jones","DF",72,24,69,45,64,64,76,83],["C. Barron","MF",72,30,73,64,75,72,69,77],["A. Malanda","DF",72,29,80,39,56,63,75,82],["Neto Borges","DF",71,22,70,53,68,70,71,81],["T. Conway","FW",71,24,84,72,62,74,38,68],["W. Lankshear","FW",70,27,72,76,59,72,35,78],["S. Dieng","GK",70,23,41,45,69,45,79,50],["D. Strelec","FW",70,29,73,74,61,73,39,70],["G. Edmundson","DF",70,24,72,39,55,61,73,84],["J. Sarmiento","MF",70,27,86,72,72,81,44,65],["S. Brynn","GK",69,23,32,45,67,45,78,50],["A. Cozier-Duberry","MF",69,30,89,72,69,79,44,60],["K. Joseph","FW",69,22,76,67,61,69,53,79],["M. Peart-Harris","MF",68,25,71,65,68,70,60,74],["A. Kanté","MF",68,30,69,50,65,72,72,76],["A. Bangura","DF",68,24,94,38,56,69,61,77]],"MIL":[["F. Azeez","FW",75,28,82,74,77,79,45,72],["T. Crama","DF",75,28,71,54,66,70,78,85],["J. Cooper","DF",74,26,58,42,58,62,83,94],["C. Taylor","DF",73,26,65,47,58,63,79,87],["A. Doughty","DF",72,22,81,61,74,72,70,71],["C. De Norre","MF",72,23,67,68,71,75,71,75],["C. Neghli","FW",71,23,81,71,68,71,51,67],["Z. Sturge","DF",70,23,76,50,65,70,69,75],["R. Esse","MF",70,22,82,70,71,81,50,64],["M. Crocombe","GK",70,25,49,45,66,45,78,50],["T. Arconte","FW",70,25,79,71,64,72,30,71],["R. Leonard","DF",70,30,70,64,66,67,69,76],["M. Ivanović","FW",70,23,75,73,59,71,43,73],["L. Cundle","MF",69,25,76,68,73,75,59,60],["M. Sykes","MF",69,27,75,66,67,72,66,71],["L. Dykes","FW",69,30,70,72,56,68,33,87],["J. Coburn","FW",69,27,63,77,60,72,33,79],["L. Jensen","GK",69,29,33,45,64,45,78,50],["D. Batth","DF",68,30,42,35,54,53,80,90],["F. Marschall","GK",66,26,24,45,65,45,74,50],["R. Bangura-Williams","MF",66,28,87,67,69,74,41,58],["Y. Issoufou","MF",65,25,75,57,65,69,58,64],["A. Matthews","FW",58,23,70,59,49,60,32,54]],"BIR":[["M. Ducksch","FW",73,25,61,81,81,79,39,75],["L. Vázquez","FW",73,22,72,77,65,73,47,83],["C. Klarer","DF",73,29,70,43,57,67,80,83],["D. Fry","DF",72,23,67,36,63,66,79,80],["T. Iwata","DF",72,29,76,65,68,70,70,78],["Paik Seung Ho","MF",72,29,66,69,72,76,68,77],["M. Bird","MF",72,25,71,67,73,74,72,74],["K. Lund","DF",72,23,89,58,70,72,69,72],["D. Gray","FW",72,27,83,72,68,80,41,61],["L. Thomas","GK",72,30,29,45,67,45,82,50],["P. Neumann","DF",72,24,81,37,63,68,74,81],["J. Solís","MF",71,24,63,67,69,71,73,82],["M. Leonard","MF",71,30,74,67,74,72,68,70],["A. Cochrane","DF",71,25,77,50,71,73,72,73]],"BLA":[["T. Cantwell","MF",73,30,76,76,80,82,50,63],["S. Morsy","MF",71,26,55,65,71,72,74,80],["R. Alebiosu","DF",70,30,88,45,63,70,65,78],["R. Morishita","MF",70,29,76,62,71,76,66,66],["Y. Ohashi","FW",70,26,73,73,64,72,39,73],["D. Afolayan","FW",70,28,79,70,65,73,45,68],["S. Mcloughlin","DF",70,23,58,39,62,65,76,83],["A. Guðjohnsen","FW",69,26,80,70,57,72,33,74],["M. Baradji","MF",69,22,68,68,67,70,70,74],["B. Tóth","GK",69,22,35,45,65,45,78,50],["A. Pears","GK",69,28,44,45,67,45,77,50],["H. Carter","DF",68,29,72,42,58,60,69,79],["L. Miller","DF",68,26,70,48,62,64,69,78],["A. Forshaw","MF",68,24,48,65,72,70,68,71],["S. Wharton","DF",68,22,58,38,58,66,74,81],["Yuri Ribeiro","DF",68,30,75,53,67,69,67,68],["M. Jørgensen","MF",68,28,87,73,67,74,39,73],["A. Henriksson","MF",66,29,70,63,64,67,58,76],["C. O'Riordan","DF",65,26,58,38,53,55,69,81],["G. Pratt","DF",63,22,66,32,46,57,69,72]],"CHA":[["E. Van Egmond","MF",76,30,61,69,79,75,80,85],["A. Neville","DF",75,23,74,71,74,73,75,80],["S. Whitehouse","GK",75,25,31,45,66,45,87,50],["A. Koivunen","GK",74,29,31,45,68,45,85,50],["L. Azzaro","FW",74,25,74,81,66,80,40,72],["K. Skeels","DF",73,24,66,36,59,67,86,76],["L. Jones","DF",73,24,62,45,57,59,80,92],["L. Davidson","MF",71,27,74,51,69,76,77,74],["K. Grant","FW",70,29,83,71,64,72,34,68],["A. Bell","DF",70,23,76,51,61,68,71,75],["E. Ndow","DF",70,24,59,48,63,63,76,81],["T. Kaminski","GK",70,29,45,45,68,45,78,50],["K. Ramsay","DF",70,26,80,52,63,69,70,73],["S. Carey","MF",70,25,69,74,70,73,65,70],["A. Okonkwo","GK",70,25,44,45,68,45,78,50],["K. Lockwood","MF",69,23,76,80,69,76,47,68],["J. Rankin-Costello","DF",69,28,75,61,66,69,68,72],["M. Godden","FW",68,28,69,74,61,70,36,70],["C. Coventry","MF",68,28,69,56,68,70,68,75],["A. Pedersen","GK",68,25,17,45,61,45,78,50],["C. Kelman","FW",68,28,81,69,54,68,33,71],["N. Chalobah","MF",68,26,56,66,70,68,72,71],["M. Alli","MF",68,23,92,72,65,77,37,74],["T. Campbell","MF",68,26,97,69,66,75,41,70],["G. Docherty","MF",68,24,68,63,65,69,67,78],["R. Apter","MF",67,24,88,68,68,76,50,54],["D. Kanu","FW",64,24,78,64,51,64,32,66],["N. Asiimwe","DF",63,23,75,41,55,61,58,74]],"DER":[["C. Morris","FW",74,29,74,79,64,75,39,82],["J. Widell Zetterström","GK",73,28,40,45,65,45,83,50],["M. Clarke","DF",73,25,55,44,61,69,81,86],["A. Mowatt","MF",72,30,54,73,77,73,69,75],["S. Szmodics","MF",72,29,79,77,73,79,56,67],["L. Travis","MF",72,23,68,64,70,73,74,83],["F. Bilbija","MF",72,26,73,78,78,81,40,75],["B. Clark","MF",71,24,74,67,75,79,57,65],["P. Agyemang","FW",71,22,82,73,57,72,31,78],["E. Cashin","DF",71,27,61,49,62,65,76,83],["S. Langås","DF",71,23,86,38,57,64,68,85],["C. Taylor","DF",70,26,57,55,70,71,75,73],["J. Ward","DF",70,30,84,61,73,74,67,66],["D. Ozoh","MF",70,26,70,60,66,73,72,82],["D. Sanderson","DF",70,22,71,45,60,63,74,80],["D. Murkin","DF",70,26,87,51,65,69,63,79],["M. Fuseini","FW",69,30,88,71,60,73,27,53],["R. Brewster","FW",69,30,80,72,59,73,35,65],["H. Meister","FW",69,25,72,70,59,71,36,80],["R. Hedges","MF",69,24,79,67,67,73,61,70],["O. Fraulo","MF",69,23,71,64,69,72,65,73],["L. Salvesen","FW",68,23,71,70,57,65,42,85],["M. Johnston","DF",68,24,84,44,64,66,65,75],["J. Vickers","GK",67,25,45,45,65,45,74,50],["K. Goudmijn","MF",67,27,74,59,68,74,63,56],["O. Eames","MF",56,23,66,52,55,59,52,53]],"NOR":[["A. Musaba","MF",73,28,97,73,71,84,41,74],["K. Mclean","MF",73,28,61,72,74,74,72,80],["A. Ahmed","MF",72,23,87,65,71,77,65,68],["V. Kovacević","GK",72,25,42,45,70,45,81,50],["D. Yongwa","DF",72,22,89,45,66,72,71,76],["P. Mattsson","MF",72,27,62,61,72,74,76,82],["M. Kvistgaarden","FW",72,30,87,71,61,74,48,68],["H. Darling","DF",71,25,71,48,62,65,74,81],["M. Touré","FW",70,22,89,69,57,68,33,75],["R. Mcconville","DF",70,23,69,39,57,58,77,79],["J. Córdoba","DF",70,26,79,34,57,66,72,79],["S. Field","MF",70,30,62,61,67,72,78,75],["M. Topić","MF",70,28,72,55,68,68,77,82],["J. Makama","FW",70,28,80,72,54,68,29,82],["J. Medić","DF",70,22,65,54,62,61,71,85],["K. Fisher","DF",70,30,77,41,64,69,71,78],["A. Brooks","MF",70,25,80,70,72,78,54,65],["A. Slimane","MF",69,26,67,68,68,73,60,75],["A. Forson","MF",69,22,89,64,71,77,59,49],["O. Schwartau","MF",69,27,82,70,68,78,46,72],["L. Gibbs","MF",68,27,69,60,68,71,68,69],["A. Crnac","FW",68,24,78,70,53,69,29,73],["P. Maghoma","MF",68,30,69,63,67,76,61,68],["B. Chrisene","DF",68,27,75,58,66,69,66,69],["P. Diallo","MF",68,25,89,77,70,80,33,62]],"POR":[["J. Murphy","FW",73,23,93,71,70,75,40,63],["E. Adams","MF",71,28,75,63,65,69,74,86],["T. Devlin","DF",71,28,75,61,65,68,70,79],["R. Poole","DF",70,27,71,44,59,63,72,81],["C. Shaughnessy","DF",70,29,65,52,63,62,72,81],["A. Segečić","FW",70,27,82,72,66,73,37,58],["C. Bishop","FW",69,23,69,71,63,67,45,86],["M. Milovanović","FW",69,27,64,76,57,71,37,83],["R. Shein","MF",69,29,79,66,67,72,66,70],["J. Swift","MF",69,30,61,72,73,74,61,65],["C. Ogilvie","DF",69,27,72,48,64,66,68,79],["Z. Swanson","DF",69,24,75,53,68,69,70,71],["K. Anderson","MF",69,24,83,67,69,74,58,67],["M. Pack","MF",68,22,37,66,74,69,69,79],["D. Bielica","GK",68,28,33,45,65,45,77,50],["A. Kamara","MF",68,23,92,69,65,76,45,65],["J. Knight","DF",67,22,59,56,58,62,71,77],["J. Bursik","GK",66,22,40,45,65,45,73,50],["I. Mohamed","MF",65,30,51,55,64,67,71,72],["J. Farrell","DF",65,22,69,46,56,61,65,75],["T. Shade","FW",64,29,84,59,50,62,43,66],["H. Matthews","DF",64,23,72,30,51,55,68,74]],"PRE":[["D. Iversen","GK",73,27,47,45,61,45,83,50],["A. Devine","MF",72,23,81,71,75,77,58,70],["C. Lang","MF",71,25,83,74,70,76,53,76],["L. Gibson","DF",71,22,64,44,64,67,76,80],["M. Osmajić","FW",71,26,85,74,57,64,39,81],["J. Storey","DF",71,23,59,41,61,64,79,82],["L. Leroy","MF",71,26,56,64,75,75,69,75],["H. Clarke","DF",70,25,79,58,61,66,67,80],["A. Hughes","DF",70,28,60,46,66,64,74,82],["L. Lindsay","DF",70,23,47,47,59,60,80,87],["J. Kenny","FW",70,23,84,71,56,68,35,73],["T. Small","DF",70,29,87,60,64,71,62,77],["O. Offiah","DF",69,30,86,35,55,66,70,75],["J. Erabi","FW",69,29,83,69,51,69,28,80],["D. Burgzorg","MF",69,27,89,73,65,81,38,79],["A. Moran","MF",68,29,80,64,72,76,50,62],["J. Thompson","MF",68,25,68,60,70,70,64,69],["A. Vukčević","DF",68,29,85,54,64,65,65,71],["B. Potts","DF",68,26,70,66,67,66,64,78],["Pol Valentín","DF",68,27,87,42,63,72,64,71],["S. Mills","MF",68,22,83,71,70,76,43,66]],"STK":[["V. Johansson","GK",74,28,38,45,70,45,84,50],["J. Mcglynn","MF",74,29,69,75,82,75,65,70],["G. Hirst","FW",72,29,77,76,60,71,48,79],["B. Johnson","DF",72,30,73,52,68,72,76,73],["E. Galbraith","DF",72,25,77,68,74,78,70,70],["J. Devenny","MF",72,25,66,71,76,74,68,69],["M. Manhoef","MF",71,27,85,70,68,77,59,74],["J. Tchamadeu","DF",70,26,88,56,62,70,64,76],["S. Ingelsson","MF",70,26,76,64,67,70,63,83],["Bae Jun Ho","MF",70,22,81,69,76,81,43,62],["L. Graham","DF",69,30,67,38,59,66,76,73],["T. Rigo","MF",69,23,66,65,70,70,67,70],["D. Soumaré","MF",69,23,63,62,66,70,74,78],["B. Lawal","DF",69,26,72,59,63,65,66,79],["M. Talovierov","DF",69,25,63,43,56,61,73,83],["T. Seko","MF",69,25,66,62,71,71,66,71],["A. Cresswell","DF",69,25,45,64,77,74,79,65],["B. Pearson","MF",69,25,59,57,67,73,72,81],["L. Cissé","FW",68,25,82,68,62,73,28,60],["R. Boženík","FW",68,30,75,69,63,66,35,75],["É. Bocat","DF",68,27,80,55,68,70,65,70],["J. Griffiths","GK",68,30,35,45,66,45,76,50],["S. Gallagher","FW",68,28,66,72,60,66,48,80]],"SWA":[["Ž. Vipotnik","FW",76,28,75,87,68,78,31,78],["Stephen Eustáquio","MF",74,26,69,70,76,75,75,76],["J. Opoku","FW",73,28,79,74,74,77,46,66],["C. Burgess","DF",73,29,56,45,65,62,81,89],["J. Tymon","DF",73,29,79,61,74,74,71,76],["L. Vigouroux","GK",73,25,45,45,70,45,82,50],["Gonçalo Franco","MF",72,27,68,67,72,75,70,76],["E. Just","MF",72,22,87,75,73,80,54,64],["R. Stewart","FW",72,26,75,79,65,71,37,77],["L. Walta","MF",71,29,71,74,74,75,63,68],["M. Stamenić","MF",71,26,69,63,70,74,71,79],["Eom Ji Sung","MF",71,22,92,71,70,80,43,72],["Z. Inoussa","MF",70,29,90,72,70,78,42,72],["A. Idah","FW",70,25,82,71,59,68,25,80],["Ronald","MF",70,26,93,72,71,79,44,65],["M. Widell","MF",68,30,73,63,69,72,60,68],["F. Lissah","DF",68,23,72,48,62,71,70,70],["S. Welsh","DF",68,30,68,36,62,67,72,75],["J. Fulton","MF",68,24,56,62,68,70,70,75],["J. Key","DF",68,23,83,52,62,69,63,73],["M. Yeo","MF",67,26,78,67,69,75,58,50],["T. Iorpenda","MF",65,26,71,59,64,67,56,75],["F. Bianchini","FW",65,27,83,64,60,67,30,57]],"WAT":[["I. Louza","MF",74,28,64,74,78,79,70,72],["M. Payero","MF",73,24,68,69,74,79,68,72],["E. Bove","MF",72,23,63,72,73,77,76,65],["M. Bola","DF",72,27,87,46,62,71,72,77],["S. Coulibaly","DF",72,30,87,40,58,68,73,81],["F. Ravaglia","GK",72,26,39,45,70,45,82,50],["J. Zemura","DF",71,30,78,63,74,79,75,58],["J. Ngakia","DF",71,27,77,54,67,73,73,69],["E. Kayembe","MF",70,30,71,67,69,70,67,78],["O. Maamma","MF",70,25,83,71,72,82,37,75],["M. Pollock","DF",70,26,59,35,57,58,79,86],["O. Traoré","DF",70,23,79,57,64,72,69,72],["H. Kyprianou","MF",69,22,68,64,65,69,72,80],["R. Vata","MF",68,29,92,72,68,78,39,60],["K. Baah","MF",68,29,94,69,66,76,37,71],["J. Petris","DF",68,22,79,40,58,62,72,70],["L. Kjerrumgaard","FW",68,23,74,73,58,68,28,76],["K. Keben","DF",68,27,69,37,56,61,73,76],["B. Mlačić","DF",65,23,58,53,58,59,68,72],["M. Adu Poku","MF",57,24,85,58,55,61,25,68]],"WBA":[["F. Myhre","MF",73,28,74,69,74,76,70,74],["M. Johnston","FW",72,24,90,73,68,80,33,52],["I. Price","MF",71,27,69,70,72,73,67,73],["C. Mepham","DF",71,30,54,45,62,67,80,80],["C. Styles","DF",71,22,72,66,71,75,70,70],["N. Phillips","DF",71,28,57,39,59,60,79,85],["M. O'Leary","GK",70,29,48,45,68,45,78,50],["R. Nzingoula","MF",70,28,75,56,63,73,77,81],["K. Bielik","DF",70,22,57,50,67,65,74,82],["T. Collyer","MF",70,27,71,54,73,72,71,73],["J. Molumby","MF",70,26,64,60,71,74,70,72],["Kareem Tunde","MF",69,30,87,66,67,74,56,72],["A. Heggebø","FW",69,29,71,72,58,71,28,81],["O. Diakité","MF",69,28,72,61,67,67,70,82],["G. Campbell","DF",69,26,79,37,48,65,70,81],["C. Townsend","DF",68,25,68,50,68,71,72,67],["N. Galves","DF",68,26,83,41,69,64,66,72],["M. Ingram","GK",67,28,45,45,66,45,74,50],["B. Pereira","DF",66,27,82,41,58,67,65,69],["A. Williams","DF",56,30,66,42,54,58,55,56]],"WRE":[["C. Doyle","DF",73,25,63,49,72,72,78,81],["J. Windass","MF",73,25,89,80,76,81,42,73],["J. Ekomié","DF",73,30,82,39,67,74,76,77],["B. Sheaf","MF",73,28,59,61,76,76,77,78],["A. Patterson","GK",73,27,32,45,72,45,83,50],["D. Hyam","DF",72,28,59,40,62,66,81,84],["B. Whiteman","MF",72,29,61,67,74,71,73,79],["K. Moore","FW",72,23,69,76,62,72,51,87],["N. Broadhead","FW",72,29,77,74,71,75,39,69],["L. Cacace","DF",72,28,74,63,70,74,72,76],["L. O'Brien","MF",72,22,67,66,70,79,72,76],["M. James","MF",70,28,54,66,75,69,71,73],["G. Dobson","MF",70,30,55,62,71,71,71,80],["M. Cleworth","DF",70,24,71,34,61,68,74,80],["D. Ward","GK",70,30,47,45,68,45,78,50],["G. Thomason","DF",70,22,64,64,71,72,70,75],["Z. Vyner","DF",70,29,72,42,60,66,74,76],["C. Coady","DF",70,27,46,62,76,69,78,71],["D. Imray","DF",69,26,84,57,63,68,63,75],["O. Rathbone","MF",69,29,81,64,64,70,64,76],["R. Longman","DF",68,23,78,67,63,69,63,74],["D. Scarr","DF",68,22,58,47,53,58,74,84],["S. Smith","FW",68,26,74,68,59,67,44,77],["D. Keillor-Dunn","FW",68,23,79,68,63,71,39,64],["E. Lee","MF",67,24,68,67,66,69,61,69],["H. Ashfield","MF",58,30,65,55,58,60,53,59]]};
+const PRIZE = [12, 10, 8, 6, 5, 4, 3, 2.5, 2, 1.5, 1, .8, .6, .4, .3, .2, 0, 0, 0, 0];
+const FN = ['Minh', 'Hải', 'Quang', 'Đức', 'Tuấn', 'Nam', 'Long', 'Khoa', 'Bảo', 'Huy', 'Phong', 'Thành', 'Kiên', 'Vinh', 'Marco', 'Luca', 'Diego', 'Hugo', 'Kai', 'Leon', 'Omar', 'Ivan', 'Theo', 'Rafa', 'Niko', 'Ravi'];
+const LN = ['Nguyễn', 'Trần', 'Lê', 'Phạm', 'Hoàng', 'Vũ', 'Đặng', 'Bùi', 'Silva', 'Costa', 'Meyer', 'Novak', 'Kovac', 'Duarte', 'Ortiz', 'Larsen', 'Moreau', 'Bianchi', 'Okafor', 'Tanaka'];
+let NID = 1;
+const genName = () => pick(FN) + ' ' + pick(LN);
+function makePlayer(pos, target, age, name) {
+  const st = {}; KEYS.forEach((k, i) => st[k] = cl(Math.round(target * PROF[pos][i] + rnd(-6, 6)), 25, 97));
+  const p = { id: NID++, name: name || genName(), pos, age: age || ri(18, 35), st, ov: 0 }; p.ov = ovr(p);
+  const d = target - p.ov; KEYS.forEach(k => p.st[k] = cl(p.st[k] + d, 25, 97)); p.ov = ovr(p); return p;
+}
+function makeSquad(c) {
+  const L = REAL[c.s].map(([name, pos, rt, age, pac, sho, pas, dri, df, phy]) => { const p = { id: NID++, name, pos, age, st: { pac, sho, pas, dri, def: df, phy }, ov: 0 }; p.ov = ovr(p); return p; });
+  const top = L.map(p => p.ov).sort((x, y) => y - x).slice(0, 11), base = top.reduce((x, y) => x + y, 0) / (top.length || 1) - 14;
+  Object.entries({ GK: 2, DF: 6, MF: 6, FW: 4 }).forEach(([pos, q]) => { for (let n = L.filter(p => p.pos === pos).length; n < q; n++) L.push(makePlayer(pos, cl(Math.round(base + rnd(-4, 4)), 45, 70), ri(16, 19))); });
+  return L;
+}
+const RANK = { GK: 0, FW: 1, MF: 2, DF: 3 };
+function autoLineup(sq, form) {
+  const sl = FORMS[form], used = new Set(), out = new Array(sl.length);
+  sl.map((s, i) => i).sort((a, b) => RANK[sl[a][0]] - RANK[sl[b][0]]).forEach(i => {
+    let best = null, bv = -1; sq.forEach(p => { if (!used.has(p.id)) { const v = eff(p, sl[i][0]); if (v > bv) { bv = v; best = p; } } });
+    used.add(best.id); out[i] = best.id;
+  });
+  return out;
+}
+function fixtures(n) {
+  const t = [...Array(n).keys()], R = [];
+  for (let r = 0; r < n - 1; r++) { const m = []; for (let i = 0; i < n / 2; i++) { const a = t[i], b = t[n - 1 - i]; m.push(r % 2 ? [b, a] : [a, b]); } R.push(m); t.splice(1, 0, t.pop()); }
+  return R.concat(R.map(rd => rd.map(([a, b]) => [b, a])));
+}
+const emptyRow = () => ({ p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 });
+function newWorld() {
+  const forms = Object.keys(FORMS), lo = ALL.slice(20);
+  return { me: null, dv: 0, sq: CLUBS.map(makeSquad), forms: CLUBS.map(() => pick(forms)), alt: { cl: lo, sq: lo.map(makeSquad), fm: lo.map(() => pick(forms)) }, round: 0, season: 1, fx: fixtures(CLUBS.length), table: CLUBS.map(emptyRow), res: [], last: [], budget: 25, market: [], nid: NID };
+}
+function recordResult(G, h, a, gh, ga) {
+  const T = G.table;[[h, gh, ga], [a, ga, gh]].forEach(([i, f, g]) => { const r = T[i]; r.p++; r.gf += f; r.ga += g; if (f > g) { r.w++; r.pts += 3; } else if (f === g) { r.d++; r.pts++; } else r.l++; });
+}
+/* ---- Trận đấu ---- */
+function strength(t, red) {
+  const SL = FORMS[t.form], g = { GK: [], DF: [], MF: [], FW: [] };
+  t.lineup.forEach((p, i) => g[SL[i][0]].push(eff(p, SL[i][0])));
+  const av = a => a.reduce((x, y) => x + y, 0) / (a.length || 1), f = 1 - red * .07;
+  const c = v => 68 + (v - 68) * .62; // nén chênh lệch để vẫn có bất ngờ
+  return { att: c(av(g.FW)) * [.93, 1, 1.05][t.ment] * f, mid: c(av(g.MF)) * (1 + (t.press - 1) * .02) * f, def: c(av(g.DF)) * [1.07, 1, .94][t.ment] * f, gk: c(g.GK[0] || 40) };
+}
+function wpick(a, w) { let s = w.reduce((x, y) => x + y, 0), r = Math.random() * s; for (let i = 0; i < a.length; i++) { r -= w[i]; if (r <= 0) return a[i]; } return a[a.length - 1]; }
+function mkPath(t, kind, res) {
+  let x = rnd(.28, .5), y = rnd(.2, .8); const pts = [[x, y]], n = kind === 'shot' ? 3 : ri(1, 2);
+  for (let i = 0; i < n; i++) { x = Math.min(.86, x + rnd(.1, .2)); y = cl(y + rnd(-.22, .22), .1, .9); pts.push([x, y]); }
+  if (kind === 'shot') { const gy = res === 'miss' ? (Math.random() < .5 ? .36 : .64) : .5 + rnd(-.06, .06); pts.push(res === 'goal' ? [1.0, gy] : res === 'miss' ? [1.03, gy] : [.95, .5 + rnd(-.04, .04)]); }
+  return pts.map(([a, b]) => [t === 0 ? a : 1 - a, b]);
+}
+function newMatch(H, A) { return { T: [H, A], ev: [], sc: [0, 0], red: [0, 0], st: { shots: [0, 0], sot: [0, 0], fouls: [0, 0], yc: [0, 0], rc: [0, 0], poss: [0, 0] }, by: [[], []] }; }
+function possession(m, mi, fr, quick) {
+  const S = [strength(m.T[0], m.red[0]), strength(m.T[1], m.red[1])];
+  const pH = cl(.5 + (S[0].mid - S[1].mid) / 180 + .015, .3, .7), t = Math.random() < pH ? 0 : 1, d = 1 - t, sa = S[t], sd = S[d];
+  m.st.poss[t]++;
+  const r = (sa.att * .55 + sa.mid * .45) / (sd.def * .65 + sd.mid * .35), at = mi - 1 + fr, base = { at, min: mi, t };
+  if (Math.random() < cl(.19 * Math.pow(r, 1.6), .06, .4)) {
+    const L = m.T[t].lineup, SL = FORMS[m.T[t].form];
+    const sh = wpick(L, L.map((p, i) => ({ FW: 5, MF: 2, DF: .35, GK: 0 }[SL[i][0]]) * (p.st.sho / 70)));
+    const q = (sh.st.sho + sh.ov) / 2, pg = cl(.098 * Math.pow(q / (sd.gk * .95 + 3), 2.2), .03, .3);
+    let res; if (Math.random() < pg) res = 'goal'; else { const y = Math.random(); res = y < .5 ? 'save' : y < .85 ? 'miss' : 'block'; }
+    m.st.shots[t]++; if (res === 'goal' || res === 'save') m.st.sot[t]++;
+    if (res === 'goal') { m.sc[t]++; m.by[t].push(sh.name + ' ' + mi + "'"); }
+    if (quick) return;
+    const cand = L.filter(p => p !== sh && p.pos !== 'GK'), as = Math.random() < .7 ? pick(cand) : null, nm = m.T[t].name;
+    const text = res === 'goal' ? `⚽ ${mi}' BÀN THẮNG! ${sh.name} (${nm})${as ? ', đường chuyền của ' + as.name : ''}. Tỷ số ${m.sc[0]}-${m.sc[1]}.`
+      : res === 'save' ? `${mi}' ${sh.name} (${nm}) dứt điểm, thủ môn cản phá xuất sắc!`
+        : res === 'miss' ? `${mi}' ${sh.name} (${nm}) sút ${pick(['vọt xà ngang', 'đi sát cột dọc', 'bay ra ngoài'])}.`
+          : `${mi}' Cú sút của ${sh.name} (${nm}) bị hậu vệ chặn lại.`;
+    m.ev.push({ ...base, k: 'shot', res, who: sh.name, path: mkPath(t, 'shot', res), text });
+  } else if (Math.random() < .13) {
+    m.st.fouls[d]++; if (quick) { if (Math.random() < .14) m.st.yc[d]++; if (Math.random() < .008) { m.st.rc[d]++; m.red[d]++; } return; }
+    const L = m.T[d].lineup.filter(p => p.pos !== 'GK'), pl = pick(L); let card = '', red = false;
+    if (Math.random() < .008) { red = true; m.st.rc[d]++; m.red[d]++; card = ' 🟥 Thẻ đỏ!'; } else if (Math.random() < .14) { m.st.yc[d]++; card = ' 🟨 Thẻ vàng.'; }
+    m.ev.push({ at, min: mi, t: d, k: 'foul', res: red ? 'red' : card ? 'yellow' : 'none', who: pl.name, path: [[rnd(.25, .75), rnd(.15, .85)]], text: `${mi}' ${pl.name} (${m.T[d].name}) phạm lỗi.${card}` });
+  } else if (!quick) m.ev.push({ ...base, k: 'attack', res: 'none', path: mkPath(t, 'attack'), text: `${mi}' ${m.T[t].name} triển khai tấn công nhưng bị chặn lại.` });
+}
+function playMinutes(m, a, b, quick) {
+  if (a === 1 && !quick) m.ev.push({ at: 0, min: 0, t: 0, k: 'ko', res: 'none', path: [[.5, .5]], text: "Trận đấu bắt đầu!" });
+  for (let mi = a; mi <= b; mi++) { const n = Math.random() < .25 ? 2 : 1; for (let k = 0; k < n; k++) possession(m, mi, k / n, quick); }
+  if (!quick) { if (b === 45) m.ev.push({ at: 45, min: 45, t: 0, k: 'ht', res: 'none', path: [[.5, .5]], text: `Hết hiệp 1. Tỷ số ${m.sc[0]}-${m.sc[1]}.` }); if (b === 90) m.ev.push({ at: 90, min: 90, t: 0, k: 'ft', res: 'none', path: [[.5, .5]], text: `Hết giờ! Tỷ số chung cuộc ${m.sc[0]}-${m.sc[1]}.` }); }
+}
+/*ENGINE_END*/
+/* ================= Giao diện ================= */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const SAVE = 'fm_save_v2', TABS = [['home', 'Tổng quan'], ['squad', 'Đội hình'], ['players', 'Cầu thủ'], ['league', 'Giải đấu'], ['market', 'Chuyển nhượng']];
+const MENT = ['Phòng ngự', 'Cân bằng', 'Tấn công'], PRESS = ['Thấp', 'Vừa', 'Cao'];
+let G = null, W0 = null, tab = 'home', sel = { slot: null, pl: null }, MV = null, toastT = 0;
+const save = () => { G.nid = NID; G.cl = CLUBS; try { localStorage.setItem(SAVE, JSON.stringify(G)); } catch (e) {} };
+const loadSave = () => { try { const j = localStorage.getItem(SAVE); return j ? JSON.parse(j) : null; } catch (e) { return null; } };
+const tier = o => o >= 85 ? 'elite' : o >= 75 ? 'gold' : o >= 65 ? 'silver' : 'bronze';
+const byId = (i, id) => G.sq[i].find(p => p.id === id);
+const money = v => '$' + (Math.round(v * 10) / 10) + 'M';
+const valueOf = p => Math.max(.3, Math.round(Math.pow(Math.max(p.ov - 48, 0), 2) * .011 * 10) / 10);
+const toast = t => { const e = $('toast'); e.textContent = t; e.classList.remove('hidden'); clearTimeout(toastT); toastT = setTimeout(() => e.classList.add('hidden'), 2200); };
+const badge = (c, sz) => `<span class="bdg" style="--a:${c.c1};--b:${c.c2};width:${sz}px;height:${Math.round(sz * 1.1)}px;font-size:${Math.round(sz * .32)}px">${c.s}</span>`;
+function teamRating(world, i) { const s = world.sq[i], L = autoLineup(s, world.forms[i]).map(id => s.find(p => p.id === id)); return Math.round(L.reduce((a, p) => a + p.ov, 0) / 11); }
+function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function face(p, c) {
+  const r = mulberry(p.id * 7919), skins = ['#f1c9a5', '#e0ac82', '#c68a5e', '#8d5a3b', '#f6d9bd'], hairs = ['#1a1209', '#3b2a14', '#6b4a22', '#c9a24b', '#9a2b1e'];
+  const sk = skins[Math.floor(r() * 5)], hc = hairs[Math.floor(r() * 5)], st = Math.floor(r() * 4);
+  const hair = [`<path d="M24 28Q22 8 40 8Q58 8 56 28Q50 16 40 16Q30 16 24 28Z" fill="${hc}"/>`, `<path d="M23 30Q19 5 40 5Q61 5 57 30Q52 13 40 13Q28 13 23 30Z" fill="${hc}"/>`, `<rect x="25" y="8" width="30" height="9" rx="4" fill="${hc}"/>`, ''][st];
+  return `<svg viewBox="0 0 80 90" aria-hidden="true"><path d="M6 90Q9 62 40 60Q71 62 74 90Z" fill="${c.c1}"/><path d="M31 60L40 71L49 60Z" fill="${c.c2}"/><rect x="34" y="48" width="12" height="14" fill="${sk}"/><ellipse cx="40" cy="32" rx="15" ry="18" fill="${sk}"/>${hair}<circle cx="34" cy="33" r="1.8" fill="#222"/><circle cx="46" cy="33" r="1.8" fill="#222"/><path d="M35 42Q40 45 45 42" stroke="#7a3b2b" stroke-width="1.6" fill="none"/></svg>`;
+}
+function card(p, c) {
+  const L = p.pos === 'GK' ? ['BAY', 'BẮT', 'PHÁT', 'PXẠ', 'TỐC', 'THỂ'] : ['TỐC', 'SÚT', 'CHUY', 'RÊ', 'THỦ', 'THỂ'];
+  return `<div class="card ${tier(p.ov)}"><div class="cl"><b class="ov">${p.ov}</b><span>${p.pos}</span>${badge(c, 22)}</div><div class="fc">${face(p, c)}</div><div class="nm">${esc(p.name)}</div><div class="st">${KEYS.map((k, i) => `<span><b>${p.st[k]}</b> ${L[i]}</span>`).join('')}</div></div>`;
+}
+function fixLineup() {
+  const s = G.sq[G.me], ok = new Set(s.map(p => p.id)), used = new Set(), sl = FORMS[G.form], L = (G.lineup || []).slice(0, 11);
+  while (L.length < 11) L.push(null);
+  L.forEach((id, i) => { if (ok.has(id) && !used.has(id)) used.add(id); else L[i] = null; });
+  L.forEach((id, i) => { if (id === null) { let b = null, bv = -1; s.forEach(p => { if (!used.has(p.id)) { const v = eff(p, sl[i][0]); if (v > bv) { bv = v; b = p; } } }); L[i] = b.id; used.add(b.id); } });
+  G.lineup = L;
+}
+function rankOf(i) { const T = G.table; return CLUBS.map((c, k) => k).sort((a, b) => T[b].pts - T[a].pts || (T[b].gf - T[b].ga) - (T[a].gf - T[a].ga) || T[b].gf - T[a].gf).indexOf(i) + 1; }
+/* ---- Màn hình ---- */
+function renderStart() {
+  const sv = loadSave();
+  $('app').innerHTML = `<div class="wrap"><h1 class="logo">QUẢN LÝ <span>BÓNG ĐÁ</span></h1><p class="sub">Chọn một câu lạc bộ để bắt đầu mùa giải. Giải Ngoại Hạng gồm 20 đội; xuống hạng thì đá Hạng Nhất, thắng lớn thì lên lại. Cầu thủ già đi, giải nghệ, học viện đào tạo lứa mới mỗi mùa.</p>
+  ${sv ? `<button class="btn gold" data-act="cont">▶ Tiếp tục: ${esc(sv.cl[sv.me].n)} · Mùa ${sv.season}, vòng ${Math.min(sv.round + 1, sv.fx.length)}</button>` : ''}
+  <div class="clubs">${CLUBS.map((c, i) => `<button class="club" data-club="${i}">${badge(c, 64)}<b>${c.n}</b><span class="num">${teamRating(W0, i)}</span><small>Chỉ số đội</small></button>`).join('')}</div></div>`;
+}
+function renderHub() {
+  const c = CLUBS[G.me]; fixLineup();
+  $('app').innerHTML = `<div class="wrap"><div class="top">${badge(c, 46)}<div><h2>${c.n}</h2><small>${G.dv ? 'Hạng Nhất' : 'Ngoại Hạng'} · Mùa ${G.season} · ${G.round >= G.fx.length ? 'Kết thúc mùa' : 'Vòng ' + (G.round + 1) + '/' + G.fx.length}</small></div><div class="bud num">${money(G.budget)}</div></div>
+  <nav class="tabs">${TABS.map(([k, n]) => `<button data-tab="${k}" class="${tab === k ? 'on' : ''}">${n}</button>`).join('')}</nav><div id="tabc">${tabHtml()}</div></div>`;
+}
+function renderTab() { $('tabc').innerHTML = tabHtml(); document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab)); }
+function tabHtml() { return { home: homeHtml, squad: squadHtml, players: playersHtml, league: leagueHtml, market: marketHtml }[tab](); }
+function formDots() { return G.res.slice(-5).map(r => { const my = r.h === G.me ? r.gh : r.ga, th = r.h === G.me ? r.ga : r.gh; return `<i class="f ${my > th ? 'w' : my === th ? 'd' : 'l'}">${my > th ? 'T' : my === th ? 'H' : 'B'}</i>`; }).join('') || '<small>Chưa có trận nào</small>'; }
+function userRating() { return Math.round(G.lineup.reduce((a, id) => a + byId(G.me, id).ov, 0) / 11); }
+function homeHtml() {
+  if (G.round >= G.fx.length) return seasonEndHtml();
+  const m = G.fx[G.round].find(x => x[0] === G.me || x[1] === G.me), home = m[0] === G.me, o = home ? m[1] : m[0], oc = CLUBS[o], mc = CLUBS[G.me];
+  const top = CLUBS.map((c, i) => i).sort((a, b) => rankOf(a) - rankOf(b)).slice(0, 4);
+  return `${reportHtml()}<div class="panel next"><small>${home ? 'Sân nhà' : 'Sân khách'} · Vòng ${G.round + 1}</small><div class="vs"><div>${badge(mc, 56)}<b>${mc.n}</b><span class="num">${userRating()}</span></div><span class="num vsx">VS</span><div>${badge(oc, 56)}<b>${oc.n}</b><span class="num">${teamRating(G, o)}</span></div></div><button class="btn gold big" data-act="play">▶ VÀO TRẬN</button></div>
+  <div class="panel"><h3>Phong độ</h3><div class="form">${formDots()}</div></div>
+  <div class="panel"><h3>Top bảng xếp hạng</h3>${top.map((i, k) => `<div class="lrow ${i === G.me ? 'me' : ''}"><b>${k + 1}</b>${badge(CLUBS[i], 20)} ${CLUBS[i].n}<span class="num">${G.table[i].pts} đ</span></div>`).join('')}</div>`;
+}
+function seasonEndHtml() {
+  const r = rankOf(G.me), prize = (PRIZE[r - 1] || 0) * (G.dv ? .4 : 1);
+  return `<div class="panel next"><h3>Kết thúc mùa ${G.season}</h3><p>Câu lạc bộ của bạn xếp thứ <b class="num">${r}/${CLUBS.length}</b>${r === 1 ? ' 🏆 VÔ ĐỊCH!' : ''}${G.dv === 0 && r > CLUBS.length - 3 ? ' ⬇ Xuống hạng.' : G.dv === 1 && r <= 3 ? ' ⬆ Thăng hạng!' : ''}. Tiền thưởng: <b>${money(prize)}</b>.</p>${tableHtml()}<button class="btn gold big" data-act="newseason">Sang mùa mới</button></div>`;
+}
+function squadHtml() {
+  const s = G.sq[G.me], sl = FORMS[G.form], inL = new Set(G.lineup);
+  const pitch = sl.map((sp, i) => { const p = byId(G.me, G.lineup[i]); return `<button class="slot ${sel.slot === i ? 'sel' : ''} ${p.pos !== sp[0] ? 'bad' : ''}" style="left:${sp[2] * 100}%;bottom:${sp[1] * 100}%" data-slot="${i}"><i>${Math.round(eff(p, sp[0]))}</i>${esc(p.name.split(' ').slice(-1)[0])}</button>`; }).join('');
+  const order = [...G.lineup.map(id => byId(G.me, id)), ...s.filter(p => !inL.has(p.id)).sort((a, b) => b.ov - a.ov)];
+  const row = (p, i) => `<button class="row ${sel.pl === p.id ? 'sel' : ''}" data-pl="${p.id}"><b class="pp">${p.pos}</b><span class="rn">${esc(p.name)}</span><small>${p.age} tuổi</small><span class="num">${p.ov}</span><em>${i < 11 ? 'Chính' : 'Dự bị'}</em></button>`;
+  const opt = (arr, v) => arr.map((n, i) => `<option value="${i}" ${i === v ? 'selected' : ''}>${n}</option>`).join('');
+  return `<div class="ctrls"><label>Sơ đồ<select id="selForm">${Object.keys(FORMS).map(f => `<option ${f === G.form ? 'selected' : ''}>${f}</option>`).join('')}</select></label><label>Tâm lý<select id="selMent">${opt(MENT, G.ment)}</select></label><label>Pressing<select id="selPress">${opt(PRESS, G.press)}</select></label><button data-act="auto">Tự chọn đội hình</button></div>
+  <p class="hint">Chạm một vị trí rồi chạm một cầu thủ (hoặc ngược lại) để đổi chỗ. Cầu thủ đá sai vị trí sẽ bị trừ điểm (ô màu cam). Chỉ số đội: <b class="num">${userRating()}</b></p>
+  <div class="pitch">${pitch}</div><div class="list">${order.map(row).join('')}</div>`;
+}
+function playersHtml() { const c = CLUBS[G.me]; return `<div class="cards">${[...G.sq[G.me]].sort((a, b) => b.ov - a.ov).map(p => card(p, c)).join('')}</div>`; }
+function tableHtml() {
+  const idx = CLUBS.map((c, i) => i).sort((a, b) => rankOf(a) - rankOf(b));
+  return `<table class="tb"><tr><th>#</th><th>CLB</th><th>Tr</th><th>T</th><th>H</th><th>B</th><th>+/-</th><th>Đ</th></tr>${idx.map((i, k) => { const r = G.table[i]; return `<tr class="${i === G.me ? 'me' : ''}"><td>${k + 1}</td><td>${badge(CLUBS[i], 18)} ${CLUBS[i].n}</td><td>${r.p}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.gf - r.ga}</td><td><b>${r.pts}</b></td></tr>`; }).join('')}</table>`;
+}
+function leagueHtml() {
+  return `<div class="panel">${tableHtml()}</div>${G.last.length ? `<div class="panel"><h3>Kết quả vòng ${G.round}</h3>${G.last.map(r => `<div class="lrow ${r.h === G.me || r.a === G.me ? 'me' : ''}">${CLUBS[r.h].n}<b class="num">${r.gh} - ${r.ga}</b>${CLUBS[r.a].n}</div>`).join('')}</div>` : ''}`;
+}
+function marketHtml() {
+  const s = G.sq[G.me];
+  const buy = G.market.map(p => `<div class="mrow"><b class="pp">${p.pos}</b><span class="rn">${esc(p.name)} <small>${p.age}t · ${esc(p.from || '')}</small></span><span class="num">${p.ov}</span><button data-buy="${p.id}">Mua ${money(p.price)}</button></div>`).join('') || '<small>Hết cầu thủ trên thị trường.</small>';
+  const sell = [...s].sort((a, b) => b.ov - a.ov).map(p => `<div class="mrow"><b class="pp">${p.pos}</b><span class="rn">${esc(p.name)} <small>${p.age}t</small></span><span class="num">${p.ov}</span><button data-sell="${p.id}">Bán ${money(Math.round(valueOf(p) * .7 * 10) / 10)}</button></div>`).join('');
+  return `<div class="panel"><h3>Thị trường (đổi mới sau mỗi vòng)</h3>${buy}</div><div class="panel"><h3>Đội hình của bạn (${s.length}/24)</h3>${sell}</div>`;
+}
+/* ---- Thao tác ---- */
+function assign(i, id) { const j = G.lineup.indexOf(id); if (j >= 0) [G.lineup[i], G.lineup[j]] = [G.lineup[j], G.lineup[i]]; else G.lineup[i] = id; save(); }
+function pickClub(i) {
+  G = W0; G.me = i; G.form = '4-4-2'; G.ment = 1; G.press = 1; G.lineup = autoLineup(G.sq[i], G.form); G.market = genMarket(); tab = 'home'; save(); renderHub();
+}
+function genMarket() {
+  const pool = [], mine = CLUBS[G.me].s;
+  const add = (cl, sq) => sq.forEach((s, i) => { if (cl[i].s === mine || s.length < 20) return; s.forEach(p => { if (p.ov >= 64 && p.ov <= 86 && (p.pos !== 'GK' || s.filter(x => x.pos === 'GK').length > 2)) pool.push({ ...p, from: cl[i].n }); }); });
+  add(CLUBS, G.sq); add(G.alt.cl, G.alt.sq);
+  const out = []; while (out.length < 10 && pool.length) { const p = pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; p.price = valueOf(p); out.push(p); }
+  return out;
+}
+const ordOf = T => T.map((_, k) => k).sort((a, b) => T[b].pts - T[a].pts || (T[b].gf - T[b].ga) - (T[a].gf - T[a].ga) || T[b].gf - T[a].gf);
+function reportHtml() { if (!G.report || G.round > 0) return ''; return `<div class="panel"><h3>Mùa ${G.season} khởi tranh · ${G.dv ? 'Hạng Nhất' : 'Ngoại Hạng'}</h3>${G.report.map(l => `<div class="lrow">${esc(l)}</div>`).join('')}</div>`; }
+function simDiv(D) { /* chạy nhanh cả mùa của giải còn lại */
+  const sv = [CLUBS, G.sq, G.forms, G.me, G.table]; CLUBS = D.cl; G.sq = D.sq; G.forms = D.fm; G.me = -1; G.table = CLUBS.map(emptyRow);
+  fixtures(CLUBS.length).forEach(rd => rd.forEach(([x, y]) => { const M = newMatch(buildTeam(x), buildTeam(y)); playMinutes(M, 1, 90, true); recordResult(G, x, y, M.sc[0], M.sc[1]); }));
+  const o = ordOf(G.table); [CLUBS, G.sq, G.forms, G.me, G.table] = sv; return o;
+}
+function ageSquad(s, mine, rep) {
+  const out = [];
+  s.forEach(p => {
+    p.age++; const d = p.age <= 21 ? ri(1, 4) : p.age <= 25 ? ri(0, 2) : p.age <= 29 ? ri(-1, 1) : p.age <= 32 ? ri(-3, 0) : ri(-5, -1);
+    KEYS.forEach(k => p.st[k] = cl(p.st[k] + d + ri(-1, 1), 25, 97)); p.ov = ovr(p);
+    if (p.age >= 36 || (p.age >= 33 && Math.random() < .35)) { if (mine) rep.push(`${p.name} (${p.age} tuổi) giải nghệ.`); } else out.push(p);
+  });
+  const avg = out.reduce((a, p) => a + p.ov, 0) / (out.length || 1);
+  Object.entries({ GK: 2, DF: 6, MF: 6, FW: 4 }).forEach(([pos, q]) => { let n = out.filter(p => p.pos === pos).length; for (; n < q; n++) { const y = makePlayer(pos, cl(Math.round(avg - 12 + rnd(-4, 6)), 45, 72), ri(16, 19)); out.push(y); if (mine) rep.push(`Học viện đưa lên ${y.name} (${pos}, ${y.age} tuổi, ${y.ov}).`); } });
+  return out;
+}
+function newSeason() {
+  const rep = [], r = rankOf(G.me), my = G.dv, alt = G.alt, meS = CLUBS[G.me].s;
+  const champ = CLUBS[ordOf(G.table)[0]].n, ordMy = ordOf(G.table), ordAlt = simDiv(alt);
+  G.budget = Math.round((G.budget + (PRIZE[r - 1] || 0) * (my ? .4 : 1)) * 10) / 10;
+  rep.push(`Vô địch mùa ${G.season}: ${my ? CLUBS[ordMy[0]].n : champ} (Ngoại Hạng: ${(my ? alt.cl[ordAlt[0]] : CLUBS[ordMy[0]]).n}, Hạng Nhất: ${(my ? CLUBS[ordMy[0]] : alt.cl[ordAlt[0]]).n}).`);
+  G.sq = G.sq.map((s, i) => ageSquad(s, i === G.me, rep)); alt.sq = alt.sq.map(s => ageSquad(s, false, []));
+  const M = { cl: CLUBS, sq: G.sq, fm: G.forms }, Up = my ? alt : M, Lo = my ? M : alt, oU = my ? ordAlt : ordMy, oL = my ? ordMy : ordAlt;
+  const pack = l => ({ cl: l.map(([D, i]) => D.cl[i]), sq: l.map(([D, i]) => D.sq[i]), fm: l.map(([D, i]) => D.fm[i]) });
+  const nU = pack([...oU.slice(0, oU.length - 3).map(i => [Up, i]), ...oL.slice(0, 3).map(i => [Lo, i])]), nL = pack([...oL.slice(3).map(i => [Lo, i]), ...oU.slice(oU.length - 3).map(i => [Up, i])]);
+  rep.push(`Lên Ngoại Hạng (3 đội): ${oL.slice(0, 3).map(i => Lo.cl[i].n).join(', ')}. Xuống Hạng Nhất: ${oU.slice(oU.length - 3).map(i => Up.cl[i].n).join(', ')}.`);
+  let k = nU.cl.findIndex(c => c.s === meS), cur = nU, oth = nL; G.dv = 0;
+  if (k < 0) { k = nL.cl.findIndex(c => c.s === meS); cur = nL; oth = nU; G.dv = 1; }
+  if (G.dv !== my) rep.unshift(G.dv ? 'Câu lạc bộ của bạn xuống hạng.' : 'Câu lạc bộ của bạn lên hạng!');
+  CLUBS = cur.cl; G.sq = cur.sq; G.forms = cur.fm; G.me = k; G.alt = oth;
+  G.season++; G.round = 0; G.fx = fixtures(CLUBS.length); G.table = CLUBS.map(emptyRow); G.res = []; G.last = []; G.report = rep;
+  G.market = genMarket(); fixLineup(); tab = 'home'; save(); renderHub();
+}
+$('app').addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.club != null) return pickClub(+t.dataset.club);
+  if (t.dataset.tab) { tab = t.dataset.tab; sel = { slot: null, pl: null }; return renderTab(); }
+  if (t.dataset.slot != null) {
+    const i = +t.dataset.slot;
+    if (sel.pl != null) { assign(i, sel.pl); sel = { slot: null, pl: null }; }
+    else if (sel.slot != null && sel.slot !== i) { [G.lineup[i], G.lineup[sel.slot]] = [G.lineup[sel.slot], G.lineup[i]]; save(); sel = { slot: null, pl: null }; }
+    else sel.slot = sel.slot === i ? null : i;
+    return renderTab();
+  }
+  if (t.dataset.pl != null) {
+    const id = +t.dataset.pl;
+    if (sel.slot != null) { assign(sel.slot, id); sel = { slot: null, pl: null }; } else sel.pl = sel.pl === id ? null : id;
+    return renderTab();
+  }
+  if (t.dataset.buy) {
+    const p = G.market.find(x => x.id === +t.dataset.buy), s = G.sq[G.me];
+    if (!p) return; if (s.length >= 24) return toast('Đội hình đã đủ 24 người.'); if (G.budget < p.price) return toast('Không đủ ngân sách.');
+    G.budget = Math.round((G.budget - p.price) * 10) / 10; G.market = G.market.filter(x => x !== p); delete p.price; delete p.from; [...G.sq.filter((_, k) => k !== G.me), ...G.alt.sq].forEach(q => { const k = q.findIndex(x => x.id === p.id); if (k >= 0) q.splice(k, 1); }); s.push(p); save(); toast('Đã mua ' + p.name); renderHub(); return;
+  }
+  if (t.dataset.sell) {
+    const s = G.sq[G.me], p = s.find(x => x.id === +t.dataset.sell); if (!p) return;
+    if (s.length <= 16) return toast('Đội hình cần ít nhất 16 cầu thủ.');
+    if (p.pos === 'GK' && s.filter(x => x.pos === 'GK').length <= 2) return toast('Cần giữ ít nhất 2 thủ môn.');
+    G.budget = Math.round((G.budget + valueOf(p) * .7) * 10) / 10; G.sq[G.me] = s.filter(x => x !== p); fixLineup(); save(); toast('Đã bán ' + p.name); renderHub(); return;
+  }
+  const a = t.dataset.act;
+  if (a === 'cont') { G = loadSave(); CLUBS = G.cl; NID = G.nid || NID; tab = 'home'; renderHub(); }
+  else if (a === 'play') startMatch();
+  else if (a === 'auto') { G.lineup = autoLineup(G.sq[G.me], G.form); save(); sel = { slot: null, pl: null }; renderTab(); }
+  else if (a === 'newseason') newSeason();
+});
+$('app').addEventListener('change', e => {
+  const t = e.target;
+  if (t.id === 'selForm') { G.form = t.value; G.lineup = autoLineup(G.sq[G.me], G.form); sel = { slot: null, pl: null }; }
+  else if (t.id === 'selMent') G.ment = +t.value; else if (t.id === 'selPress') G.press = +t.value; else return;
+  save(); renderTab();
+});
+/* ================= Trận đấu: hiển thị 2D/3D ================= */
+function buildTeam(i) {
+  const c = CLUBS[i], user = i === G.me, form = user ? G.form : G.forms[i], s = G.sq[i], ids = user ? G.lineup : autoLineup(s, form);
+  return { i, name: c.n, s: c.s, c1: c.c1, c2: c.c2, form, lineup: ids.map(id => s.find(p => p.id === id)), ment: user ? G.ment : 1, press: user ? G.press : 1, squad: s };
+}
+function startMatch() {
+  const m = G.fx[G.round].find(x => x[0] === G.me || x[1] === G.me), T = [buildTeam(m[0]), buildTeam(m[1])], M = newMatch(T[0], T[1]);
+  playMinutes(M, 1, 45);
+  MV = { m: M, T, u: m[0] === G.me ? 0 : 1, i: 0, gt: 0, speed: 1, playing: true, view: (MV && MV.view) || '2d', cur: null, wait: .6, ball: { x: .5, y: .5 }, bz: 0, poss: 0, min: 0, score: [0, 0], subs: 0, done: false, run: true, last: 0, car: 1, pc: null, pcw: 0,
+    pos: T.map((t, ti) => FORMS[t.form].map(s => ({ x: ti === 0 ? s[1] : 1 - s[1], y: s[2], dx: 0, dy: 0 }))) };
+  $('mv').classList.remove('hidden'); $('mvend').classList.add('hidden'); $('feed').innerHTML = ''; $('now').textContent = '';
+  $('mvh').innerHTML = badge(T[0], 36) + `<b>${esc(T[0].name)}</b>`; $('mva').innerHTML = `<b>${esc(T[1].name)}</b>` + badge(T[1], 36);
+  $('pp').textContent = '⏸'; syncHud(); setView(MV.view, true); requestAnimationFrame(frame);
+}
+const syncHud = () => { $('mvs').textContent = MV.score[0] + ' - ' + MV.score[1]; $('mvt').textContent = Math.min(90, Math.floor(MV.gt)) + "'"; };
+function feed(t, imp) { const p = document.createElement('p'); if (imp) p.className = 'imp'; p.textContent = t; $('feed').prepend(p); }
+function flash(t) { const f = $('flash'); f.textContent = t; f.classList.remove('hidden'); setTimeout(() => f.classList.add('hidden'), 1600); }
+function frame(ts) {
+  if (!MV || !MV.run) return;
+  const dt = Math.min(.05, MV.last ? (ts - MV.last) / 1000 : .016); MV.last = ts;
+  if (MV.playing) step(dt);
+  movePlayers(dt * (MV.playing ? MV.speed : 1)); syncHud(); draw(); requestAnimationFrame(frame);
+}
+function step(dt) {
+  const s = dt * MV.speed;
+  if (MV.wait > 0) { MV.wait -= s; return; }
+  if (MV.cur) { const c = MV.cur; c.p += s / c.dur; ballAlong(c); if (c.p >= 1) { MV.cur = null; endEvent(c.e); } return; }
+  const e = MV.m.ev[MV.i]; if (!e) return;
+  if (MV.gt >= e.at) { MV.i++; startEvent(e); } else MV.gt = Math.min(e.at, MV.gt + s * 2);
+}
+function startEvent(e) {
+  MV.min = e.min;
+  if (e.k === 'ko') { feed(e.text, true); MV.wait = .5; return; }
+  if (e.k === 'ht') { feed(e.text, true); MV.playing = false; MV.gt = 45; showHT(); return; }
+  if (e.k === 'ft') { feed(e.text, true); finish(); return; }
+  MV.poss = e.k === 'foul' ? 1 - e.t : e.t;
+  MV.cur = { e, p: 0, dur: e.k === 'shot' ? 1 : e.k === 'foul' ? .5 : .6, from: { x: MV.ball.x, y: MV.ball.y } };
+  $('now').textContent = e.text;
+  if (e.k === 'foul' ? true : e.k === 'shot' && e.res !== 'goal') feed(e.text, e.k === 'foul' && e.res !== 'none');
+}
+function endEvent(e) {
+  if (e.k !== 'shot') return;
+  if (e.res === 'goal') { MV.score[e.t]++; feed(e.text, true); flash('⚽ BÀN THẮNG!'); MV.wait = 1.9; MV.ball = { x: .5, y: .5 }; MV.poss = 1 - e.t; }
+  else MV.ball = { x: e.t === 0 ? .93 : .07, y: .5 };
+}
+function ballAlong(c) {
+  const pts = [[c.from.x, c.from.y], ...c.e.path], f = Math.min(.9999, c.p) * (pts.length - 1), i = Math.floor(f), u = f - i;
+  MV.ball = { x: pts[i][0] + (pts[i + 1][0] - pts[i][0]) * u, y: pts[i][1] + (pts[i + 1][1] - pts[i][1]) * u };
+  MV.bz = Math.sin(Math.min(1, c.p) * Math.PI) * (c.e.k === 'shot' ? 1.3 : .7);
+}
+function carrierIdx() { const P = MV.pos[MV.poss]; let b = 1, bd = 9; for (let i = 1; i < 11; i++) { const d = (P[i].x - MV.ball.x) ** 2 + (P[i].y - MV.ball.y) ** 2; if (d < bd) { bd = d; b = i; } } return b; }
+function movePlayers(dt) {
+  MV.car = carrierIdx(); const k = 1 - Math.exp(-dt * 3.4);
+  MV.T.forEach((t, ti) => MV.pos[ti].forEach((p, i) => {
+    const s = FORMS[t.form][i], att = MV.poss === ti; let tx = ti === 0 ? s[1] : 1 - s[1], ty = s[2];
+    if (i === 0) { tx = ti === 0 ? .035 : .965; ty = .5 + (MV.ball.y - .5) * .3; }
+    else if (ti === MV.poss && i === MV.car) { tx = MV.ball.x - (ti === 0 ? .012 : -.012); ty = MV.ball.y; }
+    else { tx += (MV.ball.x - tx) * (att ? .3 : .22); ty += (MV.ball.y - ty) * .18; }
+    const nx = p.x + (cl(tx, .02, .98) - p.x) * k, ny = p.y + (cl(ty, .03, .97) - p.y) * k; p.dx = nx - p.x; p.dy = ny - p.y; p.x = nx; p.y = ny;
+  }));
+}
+function draw() { if (MV.view === '3d' && T3) draw3D(); else draw2D(); }
+/* ---- 2D ---- */
+function drawPitch(g, W, H, m) {
+  g.fillStyle = '#1d7d44'; g.fillRect(0, 0, W, H);
+  for (let i = 0; i < 14; i++) { g.fillStyle = i % 2 ? '#1f8a4b' : '#1b7440'; g.fillRect(W * i / 14, 0, W / 14 + 1, H); }
+  g.strokeStyle = 'rgba(255,255,255,.85)'; g.lineWidth = Math.max(2, W / 380);
+  const X = x => m + (W - 2 * m) * x, Y = y => m + (H - 2 * m) * y, w = X(1) - X(0), h = Y(1) - Y(0);
+  g.strokeRect(X(0), Y(0), w, h); g.beginPath(); g.moveTo(X(.5), Y(0)); g.lineTo(X(.5), Y(1)); g.stroke();
+  g.beginPath(); g.arc(X(.5), Y(.5), h * .135, 0, 7); g.stroke();
+  [0, 1].forEach(s => { g.strokeRect(s ? X(1) - w * .157 : X(0), Y(.5) - h * .297, w * .157, h * .594); g.strokeRect(s ? X(1) - w * .052 : X(0), Y(.5) - h * .135, w * .052, h * .27); });
+}
+function draw2D() {
+  const c = $('c2d'), dpr = Math.min(2, window.devicePixelRatio || 1), cw = c.clientWidth || 640, W = Math.round(cw * dpr), H = Math.round(cw / 1.544 * dpr);
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; MV.pc = null; }
+  if (!MV.pc) { MV.pc = document.createElement('canvas'); MV.pc.width = W; MV.pc.height = H; drawPitch(MV.pc.getContext('2d'), W, H, W * .02); }
+  const g = c.getContext('2d'), m = W * .02, X = x => m + (W - 2 * m) * x, Y = y => m + (H - 2 * m) * y, r = W * .0125;
+  g.drawImage(MV.pc, 0, 0);
+  MV.T.forEach((t, ti) => MV.pos[ti].forEach((p, i) => {
+    const gk = i === 0; g.beginPath(); g.arc(X(p.x), Y(p.y), r, 0, 7); g.fillStyle = gk ? '#7cf06a' : t.c1; g.fill(); g.lineWidth = r * .28; g.strokeStyle = t.c2; g.stroke();
+    if (MV.poss === ti && i === MV.car) { g.beginPath(); g.arc(X(p.x), Y(p.y), r * 1.5, 0, 7); g.strokeStyle = '#fff'; g.lineWidth = 2; g.stroke(); }
+    g.fillStyle = '#fff'; g.font = `700 ${Math.round(r * .95)}px Oswald, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(i + 1, X(p.x), Y(p.y) + 1);
+  }));
+  const cp = MV.T[MV.poss].lineup[MV.car];
+  if (cp) { g.font = `600 ${Math.round(r * 1.1)}px Be Vietnam Pro, sans-serif`; g.textAlign = 'center'; g.fillStyle = '#fff'; g.shadowColor = '#000'; g.shadowBlur = 4; g.fillText(cp.name.split(' ').slice(-1)[0], X(MV.pos[MV.poss][MV.car].x), Y(MV.pos[MV.poss][MV.car].y) - r * 2.1); g.shadowBlur = 0; }
+  g.beginPath(); g.arc(X(MV.ball.x) + 2, Y(MV.ball.y) + 3, r * .55, 0, 7); g.fillStyle = 'rgba(0,0,0,.35)'; g.fill();
+  g.beginPath(); g.arc(X(MV.ball.x), Y(MV.ball.y) - MV.bz * r * .8, r * .55, 0, 7); g.fillStyle = '#fff'; g.fill(); g.strokeStyle = '#222'; g.lineWidth = 1.5; g.stroke();
+}
+/* ---- 3D (Three.js, tải khi cần) ---- */
+let T3 = null, t3Loading = false;
+function load3D(cb) {
+  if (window.THREE) return cb(true);
+  const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'; s.onload = () => cb(true); s.onerror = () => cb(false); document.head.appendChild(s);
+}
+function build3D() {
+  const c = $('c3d'), R = new THREE.WebGLRenderer({ canvas: c, antialias: true }); R.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  const S = new THREE.Scene(); S.background = new THREE.Color(0x0b1220); S.fog = new THREE.Fog(0x0b1220, 100, 240);
+  const cam = new THREE.PerspectiveCamera(42, 1.544, .1, 400); S.add(new THREE.AmbientLight(0xffffff, .78));
+  const dl = new THREE.DirectionalLight(0xffffff, .75); dl.position.set(30, 70, 25); S.add(dl);
+  const cv = document.createElement('canvas'); cv.width = 1050; cv.height = 680; drawPitch(cv.getContext('2d'), 1050, 680, 4);
+  const pl = new THREE.Mesh(new THREE.PlaneGeometry(105, 68), new THREE.MeshLambertMaterial({ map: new THREE.CanvasTexture(cv) })); pl.rotation.x = -Math.PI / 2; S.add(pl);
+  const gr = new THREE.Mesh(new THREE.PlaneGeometry(420, 300), new THREE.MeshLambertMaterial({ color: 0x0e2a1a })); gr.rotation.x = -Math.PI / 2; gr.position.y = -.05; S.add(gr);
+  const wm = new THREE.MeshLambertMaterial({ color: 0xffffff });
+  [-1, 1].forEach(sd => { const bx = (w, h, d, x, y, z) => { const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wm); b.position.set(x, y, z); S.add(b); }; bx(.18, 2.44, .18, sd * 52.5, 1.22, -3.66); bx(.18, 2.44, .18, sd * 52.5, 1.22, 3.66); bx(.18, .18, 7.5, sd * 52.5, 2.44, 0); });
+  const ball = new THREE.Mesh(new THREE.SphereGeometry(.4, 16, 12), new THREE.MeshLambertMaterial({ color: 0xffffff })); S.add(ball);
+  T3 = { R, S, cam, ball, P: [[], []], camx: 0 }; return T3;
+}
+function mkFigure(c1, c2) {
+  const g = new THREE.Group(), M = c => new THREE.MeshLambertMaterial({ color: c }), sk = M(0xe0b48c);
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(.42, .5, 1.3, 10), M(c1)); body.position.y = 1.65;
+  const sh = new THREE.Mesh(new THREE.CylinderGeometry(.5, .52, .5, 10), M(c2)); sh.position.y = .95;
+  const head = new THREE.Mesh(new THREE.SphereGeometry(.3, 10, 8), sk); head.position.y = 2.55;
+  [-.2, .2].forEach(x => { const l = new THREE.Mesh(new THREE.CylinderGeometry(.14, .14, .75, 8), M(c1)); l.position.set(x, .4, 0); g.add(l); });
+  g.add(body, sh, head); return g;
+}
+function setup3DTeams() {
+  T3.P.forEach(a => a.forEach(m => T3.S.remove(m))); T3.P = [[], []];
+  MV.T.forEach((t, ti) => { for (let i = 0; i < 11; i++) { const m = mkFigure(i === 0 ? 0x7cf06a : parseInt(t.c1.slice(1), 16), parseInt(t.c2.slice(1), 16)); T3.S.add(m); T3.P[ti].push(m); } });
+}
+function draw3D() {
+  const c = $('c3d'), w = c.clientWidth || 640, h = Math.round(w / 1.544);
+  if (c.width !== Math.round(w * T3.R.getPixelRatio()) || c.height !== Math.round(h * T3.R.getPixelRatio())) { T3.R.setSize(w, h, false); T3.cam.aspect = w / h; T3.cam.updateProjectionMatrix(); }
+  const wx = x => (x - .5) * 105, wz = y => (y - .5) * 68, t = performance.now() / 1000;
+  MV.pos.forEach((arr, ti) => arr.forEach((p, i) => {
+    const m = T3.P[ti][i], mv = Math.hypot(p.dx, p.dy) > .0004;
+    m.position.set(wx(p.x), mv ? Math.abs(Math.sin(t * 11 + i)) * .18 : 0, wz(p.y));
+    if (mv) m.rotation.y = Math.atan2(p.dx * 105, p.dy * 68);
+  }));
+  T3.ball.position.set(wx(MV.ball.x), .4 + MV.bz * 2.2, wz(MV.ball.y));
+  T3.camx += (cl(wx(MV.ball.x) * .6, -30, 30) - T3.camx) * .05;
+  T3.cam.position.set(T3.camx, 34, 50); T3.cam.lookAt(T3.camx * 1.1, 0, 2); T3.R.render(T3.S, T3.cam);
+}
+function setView(v, force) {
+  const go = ok => {
+    if (!ok) { toast('Không tải được 3D (cần mạng). Dùng 2D.'); v = '2d'; }
+    else if (v === '3d' && !T3) { try { build3D(); } catch (e) { toast('Thiết bị không hỗ trợ 3D.'); v = '2d'; } }
+    if (v === '3d' && T3) setup3DTeams();
+    MV.view = v; $('c2d').classList.toggle('hidden', v === '3d'); $('c3d').classList.toggle('hidden', v !== '3d');
+    $('v2').classList.toggle('on', v === '2d'); $('v3').classList.toggle('on', v === '3d');
+  };
+  if (v === '3d') load3D(go); else go(true);
+}
+/* ---- Điều khiển, nghỉ giữa hiệp, kết thúc ---- */
+function showHT() {
+  const u = MV.u, T = MV.T[u], bench = T.squad.filter(p => !T.lineup.includes(p)), el = $('mvend');
+  const opt = (arr, v) => arr.map((n, i) => `<option value="${i}" ${i === v ? 'selected' : ''}>${n}</option>`).join('');
+  el.innerHTML = `<h3>Nghỉ giữa hiệp · ${MV.m.sc[0]} - ${MV.m.sc[1]}</h3><div class="ctrls"><label>Tâm lý<select id="hMent">${opt(MENT, T.ment)}</select></label><label>Pressing<select id="hPress">${opt(PRESS, T.press)}</select></label></div>
+  <div class="ctrls"><label>Rút ra<select id="hOut">${T.lineup.map((p, i) => `<option value="${i}">${FORMS[T.form][i][0]} ${esc(p.name)} (${p.ov})</option>`).join('')}</select></label><label>Vào sân<select id="hIn">${bench.map(p => `<option value="${p.id}">${p.pos} ${esc(p.name)} (${p.ov})</option>`).join('')}</select></label><button data-h="sub">Thay người (${MV.subs}/3)</button></div>
+  <button class="btn gold big" data-h="go">▶ Bắt đầu hiệp 2</button>`;
+  el.classList.remove('hidden');
+}
+function finish() {
+  MV.playing = false; MV.done = true; const m = MV.m, s = m.st, tot = s.poss[0] + s.poss[1] || 1, pc = i => Math.round(100 * s.poss[i] / tot);
+  const row = (n, a, b) => `<tr><td>${a}</td><td>${n}</td><td>${b}</td></tr>`;
+  $('mvend').innerHTML = `<h3>Kết thúc: ${esc(MV.T[0].name)} ${m.sc[0]} - ${m.sc[1]} ${esc(MV.T[1].name)}</h3><table class="tb st2">${row('Kiểm soát bóng', pc(0) + '%', pc(1) + '%')}${row('Dứt điểm', s.shots[0], s.shots[1])}${row('Trúng đích', s.sot[0], s.sot[1])}${row('Phạm lỗi', s.fouls[0], s.fouls[1])}${row('Thẻ vàng', s.yc[0], s.yc[1])}${row('Thẻ đỏ', s.rc[0], s.rc[1])}</table>
+  <p class="hint">⚽ ${esc(MV.T[0].s)}: ${m.by[0].join(', ') || '—'}<br>⚽ ${esc(MV.T[1].s)}: ${m.by[1].join(', ') || '—'}</p><button class="btn gold big" data-h="done">Hoàn tất</button>`;
+  $('mvend').classList.remove('hidden'); syncHud();
+}
+function fastForward() {
+  if (!MV || MV.done || $('mvend').classList.contains('hidden') === false) return;
+  if (MV.cur) { const e = MV.cur.e; MV.cur = null; endEvent(e); MV.wait = 0; }
+  let e;
+  while ((e = MV.m.ev[MV.i])) {
+    MV.i++;
+    if (e.k === 'shot' && e.res === 'goal') { MV.score[e.t]++; feed(e.text, true); }
+    else if (e.k === 'foul' && e.res !== 'none') feed(e.text, true);
+    else if (e.k === 'ht') { feed(e.text, true); MV.playing = false; MV.gt = 45; showHT(); return; }
+    else if (e.k === 'ft') { feed(e.text, true); MV.gt = 90; finish(); return; }
+    MV.gt = e.at;
+  }
+}
+function commit() {
+  const m = MV.m, h = MV.T[0].i, a = MV.T[1].i;
+  recordResult(G, h, a, m.sc[0], m.sc[1]); G.res.push({ h, a, gh: m.sc[0], ga: m.sc[1] }); G.last = [{ h, a, gh: m.sc[0], ga: m.sc[1] }];
+  G.fx[G.round].forEach(([x, y]) => { if (x === h && y === a) return; const M = newMatch(buildTeam(x), buildTeam(y)); playMinutes(M, 1, 90, true); recordResult(G, x, y, M.sc[0], M.sc[1]); G.last.push({ h: x, a: y, gh: M.sc[0], ga: M.sc[1] }); });
+  const my = MV.u === 0 ? m.sc[0] : m.sc[1], th = MV.u === 0 ? m.sc[1] : m.sc[0];
+  G.budget = Math.round((G.budget + .5 + (my > th ? .5 : my === th ? .2 : 0)) * 10) / 10; G.round++; G.market = genMarket(); save();
+  MV.run = false; $('mv').classList.add('hidden'); tab = 'home'; renderHub();
+}
+$('mv').addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t || !MV) return;
+  if (t.id === 'pp') { if (!$('mvend').classList.contains('hidden')) return; MV.playing = !MV.playing; t.textContent = MV.playing ? '⏸' : '▶'; }
+  else if (t.dataset.sp) { MV.speed = +t.dataset.sp; document.querySelectorAll('[data-sp]').forEach(b => b.classList.toggle('on', b === t)); }
+  else if (t.id === 'skip') fastForward();
+  else if (t.id === 'v2') setView('2d'); else if (t.id === 'v3') setView('3d');
+  else if (t.dataset.h === 'sub') {
+    const T = MV.T[MV.u], i = +$('hOut').value, inId = +$('hIn').value; if (MV.subs >= 3) return toast('Đã dùng hết 3 lượt thay người.');
+    const p = T.squad.find(x => x.id === inId); if (!p) return; T.lineup[i] = p; MV.subs++; showHT();
+  }
+  else if (t.dataset.h === 'go') {
+    const T = MV.T[MV.u]; T.ment = +$('hMent').value; T.press = +$('hPress').value; if (T.i === G.me) { G.ment = T.ment; G.press = T.press; }
+    playMinutes(MV.m, 46, 90); $('mvend').classList.add('hidden'); MV.playing = true; MV.wait = .5; MV.gt = 45; $('pp').textContent = '⏸';
+  }
+  else if (t.dataset.h === 'done') commit();
+});
+/* ---- Khởi động ---- */
+W0 = newWorld(); renderStart();
+
+</script>
+</body>
+</html>
